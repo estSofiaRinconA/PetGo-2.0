@@ -1,48 +1,63 @@
-const http = require('http');
-const url = require('url');
-const querystring = require('querystring');
 
-// Import routes
-const userRoutes = require('./routes/user.routes');
+const http = require('node:http');
+const servicesRoutes = require('./routes/services.routes');
 
-// Get environment variables
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT || 3000);
 
-// Create server
 const server = http.createServer((req, res) => {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Content-Type', 'application/json');
+  // Configuración temporal para desarrollo local.
+  // Los orígenes permitidos se configurarán antes del frontend.
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
-  // Handle preflight requests
   if (req.method === 'OPTIONS') {
-    res.writeHead(200);
-    res.end();
-    return;
+    res.writeHead(204);
+    return res.end();
   }
 
-  // Parse URL
-  const parsedUrl = url.parse(req.url, true);
-  const pathname = parsedUrl.pathname;
+  let pathname;
 
-  // Route requests
-  if (pathname.startsWith('/api/users')) {
-    userRoutes(req, res, pathname, parsedUrl.query);
-  } else if (pathname === '/') {
-    res.writeHead(200);
-    res.end(JSON.stringify({ message: 'Servidor backend activo' }));
-  } else {
-    res.writeHead(404);
-    res.end(JSON.stringify({ error: 'Ruta no encontrada' }));
+  try {
+    const parsedUrl = new URL(
+      req.url,
+      `http://${req.headers.host || 'localhost'}`
+    );
+
+    pathname = parsedUrl.pathname;
+  } catch {
+    res.writeHead(400);
+    return res.end(JSON.stringify({
+      success: false,
+      error: 'URL inválida'
+    }));
   }
+
+  // Ruta de estado
+  if (pathname === '/') {
+    res.writeHead(200);
+    return res.end(JSON.stringify({
+      success: true,
+      message: 'API PetGo 2.0 activa'
+    }));
+  }
+
+  // Catálogo de servicios
+  if (
+    pathname === '/api/services' ||
+    pathname.startsWith('/api/services/')
+  ) {
+    return servicesRoutes(req, res, pathname);
+  }
+
+  // Ruta no encontrada
+  res.writeHead(404);
+  return res.end(JSON.stringify({
+    success: false,
+    error: 'Ruta no encontrada'
+  }));
 });
 
-// Start server
 server.listen(PORT, () => {
-  console.log(`Servidor ejecutándose en puerto ${PORT}`);
-  console.log(`http://localhost:${PORT}`);
+  console.log(`API PetGo activa en http://localhost:${PORT}`);
 });
 
 module.exports = server;
