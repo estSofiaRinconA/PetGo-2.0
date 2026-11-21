@@ -56,8 +56,10 @@ const server = http.createServer((req, res) => {
   }));
 });
 
-server.listen(PORT, () => {
-  console.log(`API PetGo activa en http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  server.listen(PORT, () => {
+    console.log(`API PetGo activa en http://localhost:${PORT}`);
+  });
+}
 
 module.exports = server;
