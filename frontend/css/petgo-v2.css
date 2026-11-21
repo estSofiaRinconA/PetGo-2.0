@@ -1,0 +1,562 @@
+
+/* =====================================================
+   PETGO 2.0
+   Estilos personalizados
+   Diseño naranja original + servicios elegantes
+   ===================================================== */
+
+
+/* =====================================================
+   1. NAVEGACIÓN
+   ===================================================== */
+
+.nav-public {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-login,
+.nav-register {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-login {
+  color: #374151;
+  font-weight: 700;
+}
+
+.nav-login:hover {
+  color: #ea580c;
+}
+
+.nav-register {
+  background: #ea580c;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 800;
+}
+
+.nav-register:hover {
+  background: #c2410c;
+}
+
+
+/* =====================================================
+   2. BOTONES DE LA PORTADA
+   ===================================================== */
+
+.hero .btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.hero .btn-row .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 52px;
+  padding: 14px 22px;
+
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+}
+
+.hero .btn-row .btn:not(.sec) {
+  background: #ea580c;
+  color: #ffffff;
+}
+
+.hero .btn-row .btn:not(.sec):hover {
+  background: #c2410c;
+}
+
+.hero .btn-row .btn.sec {
+  background: #ffffff;
+  color: #374151;
+  border: 2px solid #e2e8f0;
+}
+
+.hero .btn-row .btn.sec:hover {
+  border-color: #fb923c;
+  color: #ea580c;
+}
+
+
+/* =====================================================
+   3. ILUSTRACIÓN PRINCIPAL DEL PERRO
+   ===================================================== */
+
+.hero-photo {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  min-width: 0;
+}
+
+.petgo-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+
+  background: linear-gradient(
+    145deg,
+    #ffedd5,
+    #d6b797
+  );
+
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.petgo-photo::after {
+  display: none;
+}
+
+.petgo-dog {
+  display: block;
+  font-size: clamp(130px, 16vw, 185px);
+  line-height: 1;
+}
+
+
+/* =====================================================
+   4. TARJETAS FLOTANTES
+   ===================================================== */
+
+.petgo-float-superior {
+  position: absolute;
+  top: -14px;
+  right: -8px;
+  left: auto;
+}
+
+.petgo-float-inferior {
+  position: absolute;
+  bottom: -18px;
+  left: -8px;
+  top: auto;
+  right: auto;
+}
+
+.petgo-float-icono {
+  font-size: 22px;
+}
+
+.petgo-float-superior .k,
+.petgo-float-superior .v,
+.petgo-float-inferior .k,
+.petgo-float-inferior .v {
+  display: block;
+}
+
+
+/* =====================================================
+   5. SECCIÓN DE SERVICIOS
+   ===================================================== */
+
+.petgo-servicios {
+  background: #ffffff;
+  padding: 85px 24px;
+  scroll-margin-top: 80px;
+}
+
+.petgo-servicios-contenedor {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+
+/* =====================================================
+   6. ENCABEZADO DE SERVICIOS
+   ===================================================== */
+
+.petgo-servicios-encabezado {
+  margin-bottom: 42px;
+  text-align: left;
+}
+
+.petgo-servicios-etiqueta {
+  color: #ea580c;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.petgo-servicios-encabezado h2 {
+  color: #292524;
+
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 400;
+
+  margin: 12px 0;
+}
+
+.petgo-servicios-encabezado p {
+  color: #78716c;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+
+/* =====================================================
+   7. FILAS INFORMATIVAS DE SERVICIOS
+   ===================================================== */
+
+.petgo-servicio-fila {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+
+  padding: 28px 0;
+  border-bottom: 1px solid #e7e5e4;
+}
+
+
+/* =====================================================
+   8. FOTOGRAFÍAS DE LOS SERVICIOS
+   ===================================================== */
+
+.petgo-servicio-imagen {
+  width: 175px;
+  height: 175px;
+  flex-shrink: 0;
+
+  object-fit: cover;
+  border-radius: 18px;
+}
+
+
+/* =====================================================
+   9. TEXTOS DE LOS SERVICIOS
+   ===================================================== */
+
+.petgo-servicio-texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.petgo-servicio-texto h3 {
+  color: #292524;
+  font-size: 23px;
+  font-weight: 800;
+  margin: 0 0 12px;
+}
+
+.petgo-servicio-texto p {
+  color: #57534e;
+  font-size: 15px;
+  line-height: 1.8;
+  margin: 0 0 12px;
+}
+
+.petgo-servicio-texto p:last-child {
+  margin-bottom: 0;
+}
+
+.petgo-servicio-texto strong {
+  color: #292524;
+  font-weight: 800;
+}
+
+
+/* =====================================================
+   10. INVITACIÓN A CREAR UNA CUENTA
+   ===================================================== */
+
+.petgo-servicios-final {
+  text-align: center;
+  padding-top: 38px;
+}
+
+.petgo-servicios-final p {
+  color: #78716c;
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0 0 20px;
+}
+
+.petgo-servicios-boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 14px 25px;
+  border-radius: 12px;
+
+  background: #ea580c;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.petgo-servicios-boton:hover {
+  background: #c2410c;
+}
+
+
+/* =====================================================
+   11. SECCIÓN ¿CÓMO FUNCIONA?
+   ===================================================== */
+
+.petgo-como-funciona {
+  background: #fffaf5;
+}
+
+
+/* =====================================================
+   12. INVITACIÓN FINAL AL REGISTRO
+   ===================================================== */
+
+.petgo-cta-login {
+  margin-top: 22px;
+  padding-bottom: 0;
+  font-size: 14px;
+}
+
+.petgo-cta-login a {
+  color: #ffffff;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+
+/* =====================================================
+   13. DISEÑO RESPONSIVE - TABLETS
+   ===================================================== */
+
+@media (max-width: 760px) {
+
+  /* Portada */
+
+  .hero {
+    padding: 45px 0 65px;
+  }
+
+  .hero .btn-row {
+    flex-wrap: wrap;
+  }
+
+  /* Ilustración del perro */
+
+  .hero-photo {
+    width: calc(100% - 16px);
+    height: 300px;
+    margin: 20px auto 25px;
+  }
+
+  .petgo-dog {
+    font-size: 145px;
+  }
+
+  /* Tarjetas flotantes */
+
+  .petgo-float-superior {
+    top: -15px;
+    right: -7px;
+  }
+
+  .petgo-float-inferior {
+    bottom: -20px;
+    left: -7px;
+  }
+
+  /* Servicios */
+
+  .petgo-servicios {
+    padding: 70px 24px;
+  }
+
+  .petgo-servicio-imagen {
+    width: 140px;
+    height: 150px;
+  }
+
+  .petgo-servicio-fila {
+    gap: 22px;
+  }
+
+  /* Cómo funciona */
+
+  .how {
+    grid-template-columns: repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  }
+
+}
+
+
+/* =====================================================
+   14. DISEÑO RESPONSIVE - CELULARES
+   ===================================================== */
+
+@media (max-width: 600px) {
+
+  /* Encabezado */
+
+  .nav-public {
+    gap: 12px;
+  }
+
+  .nav-login {
+    font-size: 12px;
+  }
+
+  .nav-register {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+
+  /* Servicios */
+
+  .petgo-servicios {
+    padding: 60px 20px;
+  }
+
+  .petgo-servicios-encabezado {
+    margin-bottom: 22px;
+  }
+
+  .petgo-servicio-fila {
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px 0;
+  }
+
+  .petgo-servicio-imagen {
+    width: 105px;
+    height: 135px;
+    border-radius: 14px;
+  }
+
+  .petgo-servicio-texto h3 {
+    font-size: 19px;
+    margin-bottom: 8px;
+  }
+
+  .petgo-servicio-texto p {
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+}
+
+
+/* =====================================================
+   15. DISEÑO RESPONSIVE - CELULARES PEQUEÑOS
+   ===================================================== */
+
+@media (max-width: 420px) {
+
+  /* Navegación */
+
+  .navbar-in {
+    width: calc(100% - 24px);
+    gap: 8px;
+  }
+
+  .logo {
+    font-size: 19px;
+    white-space: nowrap;
+  }
+
+  .nav-public {
+    gap: 10px;
+  }
+
+  .nav-login {
+    font-size: 12px;
+  }
+
+  .nav-register {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+
+  /* Botones principales */
+
+  .hero .btn-row {
+    width: 100%;
+  }
+
+  .hero .btn-row .btn {
+    width: 100%;
+  }
+
+  /* Ilustración */
+
+  .hero-photo {
+    height: 285px;
+  }
+
+  .petgo-dog {
+    font-size: 130px;
+  }
+
+  /* Tarjetas flotantes */
+
+  .float-card {
+    padding: 10px;
+    gap: 7px;
+    white-space: normal;
+  }
+
+  .float-card .k {
+    font-size: 10px;
+  }
+
+  .float-card .v {
+    font-size: 11px;
+  }
+
+  .petgo-float-icono {
+    font-size: 18px;
+  }
+
+}
+
+
+/* =====================================================
+   16. PANTALLAS MUY PEQUEÑAS
+   ===================================================== */
+
+@media (max-width: 360px) {
+
+  .petgo-servicio-fila {
+    flex-direction: column;
+  }
+
+  .petgo-servicio-imagen {
+    width: 100%;
+    height: 180px;
+  }
+
+  .nav-public {
+    gap: 7px;
+  }
+
+  .nav-register {
+    padding: 9px 10px;
+  }
+
+}

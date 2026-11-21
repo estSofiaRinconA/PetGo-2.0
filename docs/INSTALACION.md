@@ -1,74 +1,61 @@
 # Instalación y ejecución local — PetGo 2.0
 
-## Requisitos
+**Actualizado:** 20 de noviembre de 2026. Entorno usado: Windows PowerShell, Node.js 26.13.1, npm 11.20.0. Revisar `engines` heredado de Node 18 antes del despliegue.
 
-- Git.
-- Node.js y npm instalados. El entorno que se probó utilizó Node.js `26.13.1` y npm `11.20.0`.
-- Acceso autorizado al proyecto Supabase compartido.
-- VS Code u otro editor.
+## Estructura
 
-> La plantilla heredada todavía podría incluir `engines.node: 18.x` en `backend/package.json`. Esa restricción genera `EBADENGINE` con Node 26; revisar antes del despliegue.
+```text
+PetGo-2.0/
+├── backend/       # Node.js HTTP + Supabase
+├── frontend/      # HTML, CSS, JavaScript + Vite (sin React como base)
+├── supabase/      # SQL migraciones
+└── docs/
+```
 
-## Instalación
+## Configuración
+
+En `backend/.env` (ignorado por Git) configurar las variables necesarias según `.env.example`, incluidas `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SCHEMA=petgo_v2` y `PORT=3000`. **Nunca copiar secretos en documentación ni Git.**
+
+Las migraciones `010` y `011` son pendientes de validación y ejecución; no aplicarlas sin revisar RLS y el trigger compartido de `auth.users`.
+
+## Ejecutar, en dos terminales
+
+**Terminal 1 — Backend**:
 
 ```powershell
-git clone <URL-DE-TU-REPOSITORIO>
-cd PetGo-2.0
-git switch develop
-cd backend
-npm.cmd ci
+cd "C:\Users\aikok\OneDrive\Escritorio\PetGo-2.0\backend"
+npm start
 ```
 
-Si `npm ci` falla porque falta un `package-lock.json` actualizado, revisar el estado del repositorio antes de instalar con `npm install` y guardar cambios.
-
-## Configuración privada
-
-Crear `backend/.env` tomando como guía `backend/.env.example`:
-
-```dotenv
-PORT=3000
-SUPABASE_URL=https://TU-PROYECTO.supabase.co
-SUPABASE_SECRET_KEY=TU_CLAVE_SECRETA
-SUPABASE_SCHEMA=petgo_v2
-```
-
-Nunca copiar valores reales en el ejemplo ni subir `.env`. Comprobar desde `backend/`:
+**Terminal 2 — Frontend**:
 
 ```powershell
-Test-Path .\.env
-node -e "require('dotenv').config(); console.log({url:!!process.env.SUPABASE_URL, secret:!!process.env.SUPABASE_SECRET_KEY, schema:process.env.SUPABASE_SCHEMA})"
+cd "C:\Users\aikok\OneDrive\Escritorio\PetGo-2.0\frontend"
+npm run dev
 ```
 
-## Requisitos de Supabase
+Si faltan dependencias, ejecutar `npm install` en la carpeta correspondiente. La URL habitual de Vite es `http://localhost:5173/`, pero usar la que muestre la terminal. El `frontend/vite.config.js` usa proxy `/api` hacia `http://localhost:3000` durante desarrollo; **no es configuración de producción**.
 
-- El esquema `petgo_v2` debe existir y estar incluido en **Data API → Exposed schemas**.
-- Los permisos del rol utilizado por el backend deben permitir acceso al esquema y lectura de catálogo.
-- Las migraciones están en `supabase/migrations/`. **No volver a ejecutarlas sin verificar si ya están aplicadas**.
-- No modificar tablas del esquema `public` del proyecto compartido.
-
-## Iniciar y verificar
+## Revisión
 
 ```powershell
-npm.cmd start
+cd "C:\Users\aikok\OneDrive\Escritorio\PetGo-2.0\backend"
+npm test
 ```
 
-En una segunda terminal:
+**Último resultado compartido:** 23 aprobadas y 0 fallidas. No cubren todavía integración real de mascotas.
+
+En otra terminal, con backend iniciado:
 
 ```powershell
 Invoke-RestMethod http://localhost:3000/
-Invoke-RestMethod http://localhost:3000/api/services | ConvertTo-Json -Depth 5
+try { Invoke-RestMethod http://localhost:3000/api/pets } catch { [int]$_.Exception.Response.StatusCode }
 ```
 
-Para la prueba técnica de Supabase desde `backend/`:
+Esperado para `/api/pets` sin token: 401, **aún por comprobar en el entorno del usuario**.
 
-```powershell
-node .\scripts\test-supabase.js
-```
+Consultar [`NAVEGACION.md`](NAVEGACION.md) para enlaces y vista previa del panel.
 
 ## Antes de publicar
 
-- Definir orígenes CORS permitidos para el frontend y completar preflight.
-- Ajustar `engines.node` y confirmar la versión soportada en el alojamiento.
-- Crear pruebas automatizadas reales y corregir/eliminar el script `test` heredado si sigue apuntando a un archivo inexistente.
-- Separar entorno de desarrollo/producción cuando sea viable. El proyecto Supabase es compartido.
-- Configurar secretos en el servicio de despliegue, nunca en archivos versionados.
+Validar registro real y trigger de perfiles; sesión segura y cierre; protección del catálogo detallado; políticas de autorización y tests específicos de `/api/pets`; disponibilidad y reservas reales; privacidad, accesibilidad, imágenes propias/licencias; despliegue; revisión de secretos y `git status`.

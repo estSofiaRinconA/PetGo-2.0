@@ -1,38 +1,31 @@
-# Seguridad y privacidad — PetGo 2.0
+# Seguridad — PetGo 2.0
 
-## Implementado o verificado
+**Actualizado:** 20 de noviembre de 2026.
 
-- Variables privadas configuradas en `backend/.env` con archivo ignorado por Git.
-- Acceso al catálogo mediante API propia y cliente de Supabase del servidor.
-- Esquema lógico `petgo_v2`, distinto de `public`.
-- Cinco tablas nuevas con RLS habilitado y forzado.
-- Restricción de reserva-mascota mediante FK compuesta.
-- Lectura del catálogo habilitada para el rol del backend.
+## Implementado parcialmente
 
-## Advertencias importantes
+- `backend/.env` no debe versionarse; cliente administrativo usa clave privilegiada **solo en backend**.
+- Middleware Bearer valida token con Supabase Auth y asigna usuario a la solicitud.
+- Login/registro con validaciones básicas; pruebas automatizadas simuladas, no integración real.
+- Código de `/api/pets` filtra por `req.user.id` y toma propietario del token, no del cuerpo enviado.
+- `petgo_v2` aislado lógicamente de `public`, pero comparte Supabase Auth y proyecto.
+- RLS de `profiles`, `pets` y `bookings` activado y forzado; no confundir FORCE RLS con permiso automático del backend.
 
-1. **La clave `SUPABASE_SECRET_KEY` es privilegiada.** Nunca debe exponerse al navegador, imprimirse en logs ni enviarse en capturas.
-2. **RLS forzado no reemplaza autorización del servidor** y un rol con `BYPASSRLS` puede eludir políticas.
-3. **Esquema ≠ proyecto aislado.** El sistema antiguo y PetGo 2.0 comparten Supabase Auth y configuración global.
-4. El catálogo es actualmente público por intención; ello **no autoriza** acceso público a perfiles, mascotas o reservas.
-5. El backend aún no implementa autenticación de usuarios ni autorización en cada endpoint; no exponer operaciones privadas hasta resolverlo.
+## Bloqueos antes de publicar
 
-## Obligatorio antes de activar funcionalidades
+1. Confirmar las migraciones `010` y `011`, trigger de creación de perfiles y compatibilidad con RLS forzado; verificar operación real controlada.
+2. Diseñar sesiones del navegador y cierre de sesión seguros. El código de login devuelve tokens; **evitar exponerlos accidentalmente o guardarlos sin un modelo de amenaza**. El frontend de demostración no guarda tokens.
+3. Controlar acceso a catálogo detallado en la API (`GET /api/services` sigue público en la versión actual) y a todos los endpoints privados; no basta esconder botones.
+4. Probar que usuarios no acceden ni modifican mascotas ajenas y no pueden convertirse en `admin` desde el formulario.
+5. Configurar CORS para producción, límites de peticiones, errores sin filtración de datos, accesibilidad y privacidad.
+6. Evitar desplegar `panel.html` como panel real sin comprobación de sesión: actualmente es una vista de diseño.
 
-- Verificar tokens de Supabase Auth en el backend y derivar el identificador de usuario desde la sesión, nunca aceptar `user_id` arbitrario como propietario.
-- Restringir rol `admin` a asignación segura y pruebas contra escalamiento de privilegios.
-- Definir políticas RLS por tabla y permisos SQL mínimos.
-- Validación de entrada, control de errores, límites de peticiones y registro de eventos sin PII innecesaria.
-- Configurar CORS con lista de orígenes autorizados, métodos y cabeceras exactas.
-- Verificar transacciones y conflictos de reserva en el servidor y en PostgreSQL.
-- Implementar consentimiento de cookies para usos opcionales, aviso de privacidad y accesibilidad.
-
-## Comprobación antes de Git
+## Revisión antes de commit
 
 ```powershell
 git check-ignore backend/.env
-git status
+git status --short
 git diff --cached --name-only
 ```
 
-Comprobar que `.env` real, contraseñas y secretos **no estén** en lo preparado para el commit. Si se expone una clave, revocarla/rotarla y revisar el historial; borrarla del archivo actual no basta.
+No compartir `.env`, contraseñas, refresh tokens ni claves de Supabase. Si una clave se publica por error, rotarla y revisar historial.

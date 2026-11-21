@@ -1,0 +1,362 @@
+
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Mi espacio | PetGo 2.0</title>
+
+  <meta
+    name="description"
+    content="Panel de cliente de PetGo 2.0"
+  >
+
+  <!-- FUENTES -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- ESTILOS -->
+  <link rel="stylesheet" href="/css/panel.css">
+
+  <!-- JAVASCRIPT -->
+  <script src="/js/panel.js" type="module"></script>
+  <script src="/js/navigation-guard.js" type="module"></script>
+
+</head>
+
+<body>
+
+  <!-- ==========================================
+       1. ENCABEZADO
+       ========================================== -->
+
+  <header class="encabezado">
+
+    <div class="encabezado-contenido">
+
+      <!-- LOGO -->
+      <a href="/index.html" class="logo">
+        <span class="logo-icono">🐾</span>
+        <span>PetGo</span>
+      </a>
+
+      <!-- OPCIONES DE CUENTA -->
+      <nav class="navegacion" aria-label="Opciones de cuenta">
+
+        <!-- NOTIFICACIONES -->
+        <div class="menu-contenedor">
+
+          <button
+            id="boton-notificaciones"
+            class="boton-icono"
+            type="button"
+            aria-label="Notificaciones"
+            aria-expanded="false"
+            aria-controls="menu-notificaciones"
+          >
+            <span aria-hidden="true">🔔</span>
+
+            <span
+              id="contador-notificaciones"
+              class="contador oculto"
+            >
+              0
+            </span>
+
+          </button>
+
+          <div
+            id="menu-notificaciones"
+            class="menu-desplegable notificaciones oculto"
+          >
+
+            <h2>Notificaciones</h2>
+
+            <p
+              id="mensaje-notificaciones"
+              class="menu-vacio"
+            >
+              Tus notificaciones aparecerán aquí.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- PERFIL -->
+        <div class="menu-contenedor">
+
+          <button
+            id="boton-perfil"
+            class="boton-perfil"
+            type="button"
+            aria-expanded="false"
+            aria-controls="menu-perfil"
+          >
+
+            <span class="avatar" aria-hidden="true">
+              👤
+            </span>
+
+            <span>Mi perfil</span>
+
+            <span aria-hidden="true">⌄</span>
+
+          </button>
+
+          <div
+            id="menu-perfil"
+            class="menu-desplegable perfil-menu oculto"
+          >
+
+            <a href="/perfil.html">
+              Mis datos
+            </a>
+
+            <button
+              id="cerrar-sesion"
+              type="button"
+            >
+              Cerrar sesión
+            </button>
+
+          </div>
+
+        </div>
+
+      </nav>
+
+    </div>
+
+  </header>
+
+
+  <main>
+
+    <!-- ==========================================
+         2. BIENVENIDA
+         ========================================== -->
+
+    <section class="hero">
+
+      <div class="hero-contenido">
+
+        <!-- TEXTO PRINCIPAL -->
+        <div class="hero-texto">
+
+          <span class="etiqueta">
+            MI ESPACIO PETGO
+          </span>
+
+          <h1>
+            ¡Hola! <span aria-hidden="true">👋</span>
+          </h1>
+
+          <p>
+            ¿Qué necesita tu mascota hoy?
+          </p>
+
+          <!-- ÚNICA ACCIÓN PRINCIPAL -->
+          <a
+            href="/reservar.html"
+            class="boton-principal"
+          >
+
+            <span aria-hidden="true">📅</span>
+
+            Reservar un servicio
+
+            <span aria-hidden="true">→</span>
+
+          </a>
+
+        </div>
+
+
+        <!-- ILUSTRACIÓN -->
+        <div
+          class="hero-ilustracion"
+          aria-hidden="true"
+        >
+
+          <div class="circulo-fondo"></div>
+
+          <span class="huella-fondo">
+            🐾
+          </span>
+
+          <span class="perro">
+            🐶
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         3. CONTENIDO PRINCIPAL
+         ========================================== -->
+
+    <section class="contenido">
+
+      <div class="columnas">
+
+        <!-- ACCESOS RÁPIDOS -->
+        <section
+          class="panel-tarjeta"
+          aria-labelledby="titulo-accesos"
+        >
+
+          <h2 id="titulo-accesos">
+
+            <span aria-hidden="true">✨</span>
+
+            Accesos rápidos
+
+          </h2>
+
+
+          <div class="accesos">
+
+            <!-- MIS MASCOTAS -->
+            <a
+              href="/mascotas.html"
+              class="acceso"
+            >
+
+              <div
+                class="acceso-icono"
+                aria-hidden="true"
+              >
+                🐶
+              </div>
+
+              <div class="acceso-texto">
+
+                <h3>Mis mascotas</h3>
+
+                <p>
+                  Consulta o registra tus mascotas
+                </p>
+
+              </div>
+
+              <span
+                class="flecha"
+                aria-hidden="true"
+              >
+                ›
+              </span>
+
+            </a>
+
+
+            <!-- MIS RESERVAS -->
+            <a
+              href="/reservas.html"
+              class="acceso"
+            >
+
+              <div
+                class="acceso-icono"
+                aria-hidden="true"
+              >
+                📅
+              </div>
+
+              <div class="acceso-texto">
+
+                <h3>Mis reservas</h3>
+
+                <p>
+                  Consulta el estado de tus solicitudes
+                </p>
+
+              </div>
+
+              <span
+                class="flecha"
+                aria-hidden="true"
+              >
+                ›
+              </span>
+
+            </a>
+
+          </div>
+
+        </section>
+
+
+        <!-- TARJETA INFORMATIVA -->
+        <section
+          class="panel-tarjeta panel-actividad"
+          aria-labelledby="titulo-actividad"
+        >
+
+          <h2 id="titulo-actividad">
+
+            <span aria-hidden="true">🐾</span>
+
+            Tu espacio, a tu manera
+
+          </h2>
+
+
+          <div class="actividad-contenido">
+
+            <div
+              class="actividad-icono"
+              aria-hidden="true"
+            >
+              🧡
+            </div>
+
+            <h3>
+              Todo listo para comenzar
+            </h3>
+
+            <p>
+              Registra a tu mascota y elige el servicio
+              que mejor se adapte a sus necesidades.
+            </p>
+
+            <p class="actividad-nota">
+              Aquí aparecerá información útil de tu cuenta
+              cuando conectemos el panel.
+            </p>
+
+          </div>
+
+        </section>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- ==========================================
+       4. PIE DE PÁGINA
+       ========================================== -->
+
+  <footer>
+
+    © 2026 PetGo · Cuidamos a tu mejor amigo 🧡
+
+  </footer>
+
+</body>
+</html>
