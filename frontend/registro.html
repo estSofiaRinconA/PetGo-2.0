@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrarse | PetGo</title>
+  <link rel="stylesheet" href="/css/auth.css">
+  <script src="/js/auth.js" type="module"></script>
+</head>
+<body>
+  <header class="encabezado">
+    <a class="logo" href="/index.html">🐾 PetGo</a>
+    <a class="enlace-header" href="/login.html">
+      Iniciar sesión
+    </a>
+  </header>
+
+  <main class="contenedor">
+    <section class="tarjeta">
+      <div class="icono">🐶</div>
+      <h1>Únete a PetGo</h1>
+      <p class="subtitulo">
+        Crea tu cuenta y empieza a cuidar de tu mascota.
+      </p>
+
+      <form id="registro-form">
+        <label for="nombre">Nombre completo</label>
+        <input
+          id="nombre"
+          name="nombre"
+          type="text"
+          placeholder="Tu nombre"
+          autocomplete="name"
+          maxlength="100"
+          required
+        >
+
+        <label for="email">Correo electrónico</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="tucorreo@ejemplo.com"
+          autocomplete="email"
+          maxlength="254"
+          required
+        >
+
+        <label for="password">Contraseña</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Mínimo 12 caracteres"
+          autocomplete="new-password"
+          minlength="12"
+          required
+        >
+
+        <label for="confirmar">Confirmar contraseña</label>
+        <input
+          id="confirmar"
+          name="confirmar"
+          type="password"
+          placeholder="Repite tu contraseña"
+          autocomplete="new-password"
+          minlength="12"
+          required
+        >
+
+        <button type="submit" id="submit-btn">
+          Crear mi cuenta
+        </button>
+      </form>
+
+      <p id="mensaje" class="mensaje" role="status" aria-live="polite"></p>
+
+      <p class="cambiar">
+        ¿Ya tienes cuenta?
+        <a href="/login.html">Inicia sesión</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>© 2026 PetGo · Cuidamos a tu mejor amigo 🐾</footer>
+</body>
+</html>

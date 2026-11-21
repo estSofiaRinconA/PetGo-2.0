@@ -1,42 +1,45 @@
-# Estado y siguientes pasos — PetGo 2.0
+# Estado de PetGo 2.0
 
-**Corte de documentación:** 19 de noviembre de 2026 (según el historial de desarrollo compartido).
+**Actualizado:** 20 de noviembre de 2026. **Trabajo local en desarrollo.**
 
-## Terminado y verificado manualmente
+## Comprobado durante la conversación
 
-- Fork del backend del profesor y nueva organización en `backend`, `frontend`, `supabase`, `docs`.
-- Rama `develop` y rama de trabajo `feature/supabase-setup`.
-- Migraciones `001` a `009` preparadas durante el desarrollo (confirmar presencia local de cada archivo al hacer commit).
-- Tablas `services`, `service_variants`, `profiles`, `pets` y `bookings` en `petgo_v2`.
-- Servicios activos: Paseos y Baños.
-- Tres modalidades inactivas sin precio ni duración.
-- RLS de las cinco tablas activado y forzado; seis FK iniciales y restricción compuesta posterior.
-- Conexión Node.js ↔ Supabase probada.
-- API `GET /`, `GET /api/services` probada; `POST /api/services` devuelve 405.
-- Eliminación npm del paquete `mysql`; servidor sin error de MySQL ni aviso de `url.parse()` en la última comprobación.
+- Frontend construido con **HTML5, CSS y JavaScript** sobre Vite; portada naranja/crema, introducción a Paseos y Baño y peluquería.
+- Páginas creadas: `index.html`, `login.html`, `registro.html`, `panel.html`, `mascotas.html`.
+- Panel simplificado: una acción principal para nuevas reservas; accesos a mascotas y reservas; menús de notificaciones y perfil.
+- Se ejecutó `npm test` en `backend/` con **23 pruebas aprobadas, 0 fallidas**. Son pruebas anteriores: **no prueban la nueva API de mascotas ni la autenticación en producción**.
+- Código de `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me` y ruta propuesta `GET/POST /api/pets`; la última fue integrada según los pasos dados, pero **no se obtuvo aún una respuesta HTTP comprobada**.
+- Al probar `GET /api/pets` inicialmente hubo error de conexión porque el backend no estaba activo. Se indicó arrancar con `npm start`; no consta una respuesta 401 confirmada en el registro compartido.
+- Migraciones `001`–`009` aplicadas anteriormente; `010_user_access_policies.sql` y `011_create_profiles_trigger.sql` creadas, **no consta su ejecución**.
+- Supabase `petgo_v2.profiles`: RLS habilitado y `FORCE ROW LEVEL SECURITY`, propietario `postgres` (consulta SQL compartida).
 
-## Pendiente / no probado
+## Funcionalidad visual vs real
 
-- Automatización de pruebas y CI.
-- CORS seguro para el frontend.
-- Auth, autorización por rol y panel de administración.
-- CRUD de mascotas, reservas, disponibilidad, cancelaciones y notificaciones.
-- Integridad de disponibilidad (no solapar horarios) y reglas de precios.
-- Completar RLS/políticas y permisos de escritura.
-- Diseñar e implementar frontend móvil, componentes reutilizables, cookies y accesibilidad.
-- Fotografías y diseño visual definitivo.
-- Documentación OpenAPI completa y despliegue Render de la nueva versión.
-- Revisar/retirar código heredado de MySQL y script antiguo `npm test`.
+| Área | Estado actual |
+|---|---|
+| Portada pública informativa | Interfaz creada; enlaces a login/registro |
+| Login / registro | Formularios y llamadas API preparadas; sin prueba real de alta/sesión |
+| Panel | Vista previa visual sin acceso autenticado consolidado |
+| Mis mascotas | Formulario visual; no almacena datos aún |
+| Catálogo detallado | Pendiente de acceso privado y protección backend |
+| Reservas / perfil / notificaciones reales | Pendientes |
+| Despliegue público | No confirmado |
 
-## Siguiente hito recomendado
+## Decisiones de producto
 
-1. Revisar y limpiar la carpeta accidental `backend/database/backend/`, **sin eliminar contenido sin inspeccionarlo**.
-2. Confirmar que los archivos esperados y las migraciones están guardados en el repositorio.
-3. Actualizar README y documentación.
-4. Ejecutar prueba manual de `/` y `/api/services`, revisar `git status` y crear commit en `feature/supabase-setup`.
-5. Abrir PR a `develop`; verificar que ninguna credencial aparezca en los archivos modificados.
-6. En nueva rama, crear pruebas automatizadas y eliminar dependencias heredadas sin romper MVC.
+- Sin módulos de profesionales, proveedores o empresas.
+- Sin iniciar sesión: mostrar solo explicación pública de servicios, **no catálogo detallado ni precios**.
+- Con sesión válida: mostrar catálogo y operaciones privadas solo cuando el backend controle permisos.
+- Una acción principal de reserva; no repetir enlaces con idéntica función en el panel.
+- No mostrar reservas ni alertas ficticias como datos reales.
 
-## Criterio de entrega de cada función
+## Próximos pasos, en orden
 
-Implementación + prueba + documentación + revisión de permisos + validación de UX/accesibilidad cuando corresponda. Un checklist marcado por sí solo no reemplaza la salida de la prueba.
+1. Revisar navegación local con `docs/NAVEGACION.md`; evitar enlaces rotos.
+2. Añadir pruebas automáticas de `/api/pets` y confirmar respuesta 401 sin token.
+3. Revisar/aplicar con seguridad migraciones 010 y 011 y creación de perfiles; no ejecutarlas a ciegas (RLS forzado y trigger previo del esquema antiguo).
+4. Completar sesión segura (evitar almacenar credenciales privilegiadas en navegador), cierre de sesión, rutas privadas y autorización por propietario.
+5. Conectar mascotas; después catálogo privado, reservas, perfil, notificaciones.
+6. Revisar `git status`, excluir secretos, ejecutar pruebas, crear commit y PR.
+
+**No se considera lista para producción.**

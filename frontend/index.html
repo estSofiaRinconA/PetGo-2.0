@@ -1,0 +1,427 @@
+
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>PetGo 2.0 | Cuidado para tu mascota</title>
+
+  <meta
+    name="description"
+    content="Conoce los servicios de paseos, baño y peluquería de PetGo."
+  >
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/petgo-v2.css">
+
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+
+</head>
+
+<body>
+
+  <!-- ==========================================
+       1. NAVEGACIÓN PRINCIPAL
+       ========================================== -->
+
+  <header class="navbar">
+
+    <div class="navbar-in">
+
+      <a class="logo" href="/index.html">
+        <span class="paw">🐾</span>
+        <span class="name">PetGo</span>
+      </a>
+
+      <nav class="nav-public" aria-label="Navegación principal">
+
+        <a class="nav-login" href="/login.html">
+          Iniciar sesión
+        </a>
+
+        <a class="nav-register" href="/registro.html">
+          Registrarse
+        </a>
+
+      </nav>
+
+    </div>
+
+  </header>
+
+
+  <main>
+
+    <!-- ==========================================
+         2. PORTADA
+         ========================================== -->
+
+    <section class="hero">
+
+      <div class="hero-in">
+
+        <!-- Información principal -->
+
+        <div class="hero-text">
+
+          <div class="pill">
+            <span>🐾</span>
+            <b>Bienvenido a PetGo</b>
+          </div>
+
+          <h1 class="display">
+            Cuidamos a tu
+            <em>mejor amigo</em>
+          </h1>
+
+          <p class="lead">
+            Paseos adaptados a la personalidad de tu perro,
+            baños y servicios de peluquería pensados
+            para su bienestar.
+          </p>
+
+          <div class="btn-row">
+
+            <a class="btn" href="#servicios">
+              Conoce nuestros servicios ↓
+            </a>
+
+            <a class="btn sec" href="/registro.html">
+              Crear mi cuenta
+            </a>
+
+          </div>
+
+        </div>
+
+
+        <!-- Ilustración principal -->
+
+        <div class="hero-photo">
+
+          <div class="photo-ph petgo-photo">
+
+            <span
+              class="petgo-dog"
+              role="img"
+              aria-label="Perro feliz"
+            >
+              🐶
+            </span>
+
+          </div>
+
+          <!-- Tarjeta superior -->
+
+          <div class="float-card petgo-float-superior">
+
+            <span class="petgo-float-icono">⭐</span>
+
+            <span>
+              <span class="k">Cuidado PetGo</span>
+              <span class="v">Con cariño</span>
+            </span>
+
+          </div>
+
+
+          <!-- Tarjeta inferior -->
+
+          <div class="float-card petgo-float-inferior">
+
+            <span class="petgo-float-icono">🐾</span>
+
+            <span>
+              <span class="k">Pensado para ellos</span>
+              <span class="v">Bienestar y diversión</span>
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         3. CONOCE NUESTROS SERVICIOS
+         ========================================== -->
+
+    <section id="servicios" class="petgo-servicios">
+
+      <div class="petgo-servicios-contenedor">
+
+        <!-- Encabezado -->
+
+        <div class="petgo-servicios-encabezado">
+
+          <span class="petgo-servicios-etiqueta">
+            LO QUE OFRECEMOS
+          </span>
+
+          <h2>Conoce nuestros servicios</h2>
+
+          <p>
+            Cada mascota es única. Por eso queremos ofrecer
+            opciones adaptadas a sus necesidades.
+          </p>
+
+        </div>
+
+
+        <!-- Servicio 1: Paseos -->
+
+        <article class="petgo-servicio-fila">
+
+          <img
+            src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=480&q=85"
+            alt="Perro disfrutando al aire libre"
+            class="petgo-servicio-imagen"
+            loading="lazy"
+          >
+
+          <div class="petgo-servicio-texto">
+
+            <h3>🦮 Paseos</h3>
+
+            <p>
+              Nuestros paseos están pensados para que tu perro
+              disfrute del ejercicio y la exploración de
+              forma segura.
+            </p>
+
+            <p>
+              <strong>¿Tu perro prefiere ir solo?</strong>
+              Contemplamos paseos individuales para perros
+              que necesitan mayor tranquilidad y paseos
+              grupales para quienes disfrutan de la compañía.
+            </p>
+
+          </div>
+
+        </article>
+
+
+        <!-- Servicio 2: Baño y peluquería -->
+
+        <article class="petgo-servicio-fila">
+
+          <img
+            src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=480&q=85"
+            alt="Perro recibiendo cuidados"
+            class="petgo-servicio-imagen"
+            loading="lazy"
+          >
+
+          <div class="petgo-servicio-texto">
+
+            <h3>🛁 Baño y peluquería</h3>
+
+            <p>
+              Mucho más que limpieza: queremos que tu mascota
+              esté cómoda, cuidada y fresca.
+            </p>
+
+            <p>
+              <strong>
+                ¿Solo necesita un baño o también un corte?
+              </strong>
+
+              Estamos preparando distintas opciones de higiene
+              y peluquería para que puedas elegir según
+              sus necesidades.
+            </p>
+
+          </div>
+
+        </article>
+
+
+        <!-- Invitación al registro -->
+
+        <div class="petgo-servicios-final">
+
+          <p>
+            Regístrate para consultar las opciones disponibles,
+            sus características y precios.
+          </p>
+
+          <a
+            href="/registro.html"
+            class="petgo-servicios-boton"
+          >
+            Crear mi cuenta →
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         4. CÓMO FUNCIONA PETGO
+         ========================================== -->
+
+    <section class="section petgo-como-funciona">
+
+      <div class="section-in">
+
+        <div class="section-head">
+
+          <div class="t30">
+            ¿Cómo funciona PetGo?
+          </div>
+
+          <p class="sub">
+            Cuidar de tu mascota puede ser muy sencillo.
+          </p>
+
+        </div>
+
+
+        <div class="how">
+
+          <!-- Paso 1 -->
+
+          <div class="how-step">
+
+            <div class="icon-box">👤</div>
+
+            <span class="n">Paso 01</span>
+
+            <span class="t">Crea tu cuenta</span>
+
+            <span class="d">
+              Regístrate como cliente de PetGo.
+            </span>
+
+          </div>
+
+
+          <!-- Paso 2 -->
+
+          <div class="how-step">
+
+            <div class="icon-box">🐶</div>
+
+            <span class="n">Paso 02</span>
+
+            <span class="t">Registra tu mascota</span>
+
+            <span class="d">
+              Cuéntanos sobre tu compañero.
+            </span>
+
+          </div>
+
+
+          <!-- Paso 3 -->
+
+          <div class="how-step">
+
+            <div class="icon-box">🦮</div>
+
+            <span class="n">Paso 03</span>
+
+            <span class="t">Elige un servicio</span>
+
+            <span class="d">
+              Consulta las opciones disponibles.
+            </span>
+
+          </div>
+
+
+          <!-- Paso 4 -->
+
+          <div class="how-step">
+
+            <div class="icon-box">📅</div>
+
+            <span class="n">Paso 04</span>
+
+            <span class="t">Solicita tu reserva</span>
+
+            <span class="d">
+              Selecciona lo que necesita tu mascota.
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         5. INVITACIÓN AL REGISTRO
+         ========================================== -->
+
+    <section class="cta" id="registro">
+
+      <div class="cta-in">
+
+        <h2>
+          ¿Listo para consentir a tu mascota?
+        </h2>
+
+        <p>
+          Crea tu cuenta para conocer todas las opciones,
+          consultar sus precios y encontrar el servicio
+          ideal para tu mejor amigo.
+        </p>
+
+        <a class="btn white" href="/registro.html">
+          Crear mi cuenta →
+        </a>
+
+        <p class="petgo-cta-login">
+          ¿Ya tienes una cuenta?
+          <a href="/login.html">Inicia sesión</a>
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- ==========================================
+       6. PIE DE PÁGINA
+       ========================================== -->
+
+  <footer class="footer">
+
+    <a class="logo" href="/index.html">
+      <span class="paw">🐾</span>
+      <span class="name">PetGo</span>
+    </a>
+
+    <p>
+      © 2026 PetGo. Todos los derechos reservados.
+    </p>
+
+  </footer>
+
+</body>
+</html>

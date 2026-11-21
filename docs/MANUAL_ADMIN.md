@@ -1,25 +1,18 @@
-# Manual de administración — PetGo 2.0 (PLANIFICADO)
+# Manual de administración — PetGo 2.0
 
-**Estado:** panel administrativo y autenticación por rol **no implementados**.
+**Estado al 20 de noviembre de 2026: planificación.** El panel de administración **no está implementado**. No se ha añadido ningún acceso «Soy administrador» al sitio público.
 
-## Acceso propuesto
+## Diseño previsto
 
-El administrador ingresará correo electrónico y contraseña en el inicio de sesión normal. No habrá botón público «Soy administrador». El backend verificará el rol real y permitirá la redirección al panel solo después de validar la sesión.
+La misma autenticación de clientes, con autorización estricta según rol persistido en la base de datos. Un usuario no puede darse permisos `admin` durante el registro.
 
-## Funcionalidades previstas
+## Funciones futuras
 
-- Administrar disponibilidad y modalidades de Paseos y Baños.
-- Actualizar precios y duraciones; mantener la información acordada de reservas anteriores.
-- Consultar, confirmar y gestionar reservas según reglas definidas.
-- Consultar datos de clientes y mascotas únicamente cuando sea necesario y esté autorizado.
-- Revisar estados y errores operativos.
+- Mantener modalidades y disponibilidad de Paseos y Baño y peluquería.
+- Definir y publicar precios y duración antes de habilitar reservas.
+- Revisar y gestionar solicitudes y estados de reservas.
+- Consultar información personal solo cuando sea necesario y autorizado.
 
-## Reglas de seguridad obligatorias antes de activar el panel
+## Seguridad antes de implementar
 
-- Supabase Auth para comprobar identidad.
-- El rol `admin` nunca podrá establecerse desde un formulario público.
-- Verificación de permisos en **cada endpoint administrativo**, no solo ocultando botones.
-- RLS y privilegios SQL cuidadosamente definidos; las credenciales privilegiadas nunca se exponen al frontend.
-- Pruebas que confirmen que un usuario `cliente` no puede invocar operaciones de administrador.
-
-Este archivo deberá actualizarse con capturas y procedimientos reales cuando el panel esté construido.
+Comprobar cada petición administrativa en el backend, políticas RLS y privilegios mínimos; probar que un usuario cliente recibe denegación. No habilitar funciones hasta tener pruebas y reglas definidas.

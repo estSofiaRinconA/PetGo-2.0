@@ -1,6 +1,8 @@
 
 const http = require('node:http');
 const servicesRoutes = require('./routes/services.routes');
+const authRoutes = require('./routes/auth.routes');
+const petsRoutes = require('./routes/pets.routes');
 
 const PORT = Number(process.env.PORT || 3000);
 
@@ -46,6 +48,21 @@ const server = http.createServer((req, res) => {
     pathname.startsWith('/api/services/')
   ) {
     return servicesRoutes(req, res, pathname);
+  }
+
+  // Autenticación e identidad del usuario
+  if (
+    pathname === '/api/auth/me' ||
+    pathname.startsWith('/api/auth/')
+  ) {
+    return authRoutes(req, res, pathname);
+  }
+
+  if (
+    pathname === '/api/pets' ||
+    pathname.startsWith('/api/pets/')
+  ) {
+    return petsRoutes(req, res, pathname);
   }
 
   // Ruta no encontrada

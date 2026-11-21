@@ -1,0 +1,168 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Mis mascotas | PetGo 2.0</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/mascotas.css">
+
+  <script src="/js/mascotas.js" type="module"></script>
+</head>
+
+<body>
+
+  <header class="encabezado">
+    <div class="barra">
+
+      <a class="logo" href="/panel.html">
+        🐾 PetGo
+      </a>
+
+      <a class="volver" href="/panel.html">
+        ← Volver a mi espacio
+      </a>
+
+    </div>
+  </header>
+
+  <main class="contenedor">
+
+    <div class="cabecera">
+      <div>
+        <span class="etiqueta">MI ESPACIO PETGO</span>
+        <h1>Mis mascotas 🐾</h1>
+        <p>
+          Toda la información de tus compañeros,
+          organizada en un solo lugar.
+        </p>
+      </div>
+
+      <button id="abrir-formulario" class="boton-principal" type="button">
+        + Agregar mascota
+      </button>
+    </div>
+
+    <!-- Estado de la lista -->
+    <section class="panel-mascotas" aria-labelledby="titulo-lista">
+
+      <h2 id="titulo-lista">Tus mascotas</h2>
+
+      <div id="estado-mascotas" class="estado-vacio">
+        <div class="imagen-vacia" aria-hidden="true">🐶</div>
+        <h3>¡Aquí aparecerán tus mascotas!</h3>
+        <p>
+          Agrega tu primera mascota para empezar
+          a organizar sus cuidados.
+        </p>
+      </div>
+
+    </section>
+
+    <!-- Formulario -->
+    <section id="formulario-seccion" class="formulario-seccion oculto">
+
+      <div class="formulario-cabecera">
+        <h2>Agregar mascota</h2>
+
+        <button
+          id="cerrar-formulario"
+          class="boton-cerrar"
+          type="button"
+          aria-label="Cerrar formulario"
+        >
+          ✕
+        </button>
+      </div>
+
+      <p class="ayuda">
+        Cuéntanos un poco sobre tu compañero.
+      </p>
+
+      <form id="formulario-mascota">
+
+        <div class="campo">
+          <label for="nombre">Nombre de tu mascota *</label>
+          <input
+            id="nombre"
+            name="nombre"
+            type="text"
+            placeholder="Ej. Max"
+            maxlength="100"
+            required
+          >
+        </div>
+
+        <div class="fila-campos">
+
+          <div class="campo">
+            <label for="especie">Especie *</label>
+            <select id="especie" name="especie" required>
+              <option value="">Seleccionar</option>
+              <option value="perro">Perro</option>
+              <option value="gato">Gato</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="raza">Raza</label>
+            <input
+              id="raza"
+              name="raza"
+              type="text"
+              placeholder="Ej. Criollo"
+              maxlength="100"
+            >
+          </div>
+
+        </div>
+
+        <div class="campo">
+          <label for="observaciones">
+            ¿Hay algo importante que debamos saber?
+          </label>
+
+          <textarea
+            id="observaciones"
+            name="observaciones"
+            rows="4"
+            maxlength="1000"
+            placeholder="Ej. Prefiere paseos tranquilos o necesita cuidados especiales."
+          ></textarea>
+        </div>
+
+        <p class="nota-formulario">
+          * Campos obligatorios
+        </p>
+
+        <p id="mensaje-mascota" class="mensaje" role="status" aria-live="polite"></p>
+
+        <div class="acciones">
+          <button id="cancelar" type="button" class="boton-secundario">
+            Cancelar
+          </button>
+
+          <button type="submit" class="boton-principal">
+            Guardar mascota
+          </button>
+        </div>
+
+      </form>
+
+    </section>
+
+  </main>
+
+  <footer>
+    © 2026 PetGo · Cuidamos a tu mejor amigo 🧡
+  </footer>
+
+</body>
+</html>

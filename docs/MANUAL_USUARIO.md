@@ -1,39 +1,60 @@
 # Manual de usuario — PetGo 2.0
 
-**Versión:** 0.1 (documentación de desarrollo)  
-**Estado:** el sitio público para clientes **todavía no está implementado**.
+**Versión:** 0.2, 20 de noviembre de 2026. **Estado:** prototipo local; funciones privadas aún no listas.
 
-## 1. Objetivo
+## ¿Qué es PetGo?
 
-PetGo ofrecerá dos servicios administrados directamente por la plataforma: **paseos** y **baños** para mascotas. No se permitirá que negocios externos se registren para ofrecer servicios.
+PetGo presenta servicios para mascotas administrados directamente por la plataforma. La versión actual se concentra en **Paseos** y **Baño y peluquería**; no incorpora perfiles públicos de profesionales ni proveedores externos.
 
-## 2. Qué puede utilizarse hoy
+## 1. Conocer PetGo sin registrarse
 
-La funcionalidad comprobada es técnica: una API que devuelve el catálogo de servicios activos. No se ha verificado todavía una interfaz desde la cual un cliente pueda registrarse, gestionar sus mascotas o reservar.
+1. Abrir `http://localhost:5173/` durante el desarrollo local.
+2. Elegir **Conoce nuestros servicios** para ir a la explicación pública.
+3. Leer las posibilidades previstas: paseos individuales o grupales; alternativas de baño y peluquería.
+4. Para conocer catálogo detallado, precios y reservar, usar **Registrarse** o **Iniciar sesión** cuando las funciones privadas estén activadas.
 
-Para comprobar la API durante el desarrollo:
+La página pública es **informativa**: las modalidades mencionadas son propuestas, no garantía de disponibilidad ni precio.
 
-1. Iniciar el backend siguiendo `INSTALACION.md`.
-2. Abrir `http://localhost:3000/` para confirmar que está activo.
-3. Abrir `http://localhost:3000/api/services` para consultar el catálogo.
+## 2. Registrarse (interfaz disponible; alta real pendiente de validación)
 
-## 3. Recorrido previsto para el cliente (NO disponible todavía)
+1. Pulsar **Registrarse** o **Crear mi cuenta**.
+2. Completar nombre, correo, contraseña de al menos 12 caracteres y confirmación.
+3. Si las contraseñas difieren, el formulario muestra un aviso.
+4. El botón **Crear mi cuenta** intenta comunicarse con `/api/auth/register`.
 
-1. Visitar la página de inicio y comprender qué incluyen Paseos y Baños.
-2. Explorar el servicio y sus modalidades, con precios, duración y condiciones claros.
-3. Crear cuenta o iniciar sesión.
-4. Registrar o seleccionar una mascota propia.
-5. Elegir fecha y horario disponibles.
-6. Revisar un resumen con precio y duración **calculados por el servidor**.
-7. Enviar la solicitud y recibir el estado correcto: `pendiente`, `confirmada`, `completada` o `cancelada`.
-8. Consultar o cancelar según las reglas publicadas.
+**Precaución:** el trigger de perfiles y los permisos de Supabase todavía deben validarse antes de utilizar cuentas reales. No interpretar un formulario visual como garantía de alta completada.
 
-**Aviso:** las modalidades actuales están inactivas y todavía no tienen precios o duraciones definidos. No debe habilitarse un botón de reserva hasta que existan reglas de disponibilidad y autorización reales.
+## 3. Iniciar sesión (integración pendiente)
 
-## 4. Accesibilidad y privacidad (requisitos pendientes)
+1. Abrir **Iniciar sesión**.
+2. Introducir correo y contraseña.
+3. El formulario llama a `/api/auth/login` cuando el backend está activo.
 
-La interfaz final deberá permitir navegación mediante teclado, foco visible, controles compatibles con móviles, contraste adecuado, zoom de texto y mensajes comprensibles. También tendrá aviso de cookies con opciones de aceptación, rechazo y cambio posterior de preferencias. Estas funciones **no han sido validadas en PetGo 2.0**.
+La sesión del navegador, la redirección a un panel seguro y el cierre de sesión **no están terminados**. No se guardan tokens mediante el JavaScript del prototipo.
 
-## 5. Errores frecuentes
+## 4. Conocer el panel (vista previa local)
 
-Si una petición a la API falla, revisa `MANUAL_ERRORES.md`. Los errores de conexión y permisos de Supabase son diagnósticos técnicos, no mensajes que deban mostrarse literalmente a usuarios finales.
+Durante el desarrollo se puede abrir directamente `http://localhost:5173/panel.html` para **ver el diseño**, no para acceder a datos protegidos. Incluye:
+
+- **Reservar un servicio:** futuro proceso para crear una reserva.
+- **Mis mascotas:** abre `mascotas.html`.
+- **Mis reservas:** futuro historial de reservas.
+- **Campana:** menú visual de notificaciones (sin datos reales).
+- **Mi perfil:** acceso visual a datos personales y cierre de sesión (pendientes).
+
+## 5. Mis mascotas (formulario visual)
+
+1. Desde la vista previa del panel, pulsar **Mis mascotas**.
+2. Pulsar **Agregar mascota**.
+3. Completar nombre, especie, raza opcional y observaciones opcionales.
+4. Pulsar **Guardar mascota**: **actualmente solo valida; NO guarda información en Supabase**.
+5. Pulsar **Cancelar** para cerrar sin guardar.
+6. Usar **Volver a mi espacio** para regresar al panel.
+
+## 6. Funciones todavía no disponibles
+
+Reservar y pagar servicios, consultar precios detallados desde sesión autenticada, ver historial real, recibir notificaciones reales, actualizar perfil y cerrar sesión de forma segura. No ingresar información personal real en flujos no validados.
+
+## 7. Problemas frecuentes
+
+Si un enlace dice «en preparación», todavía no se ha implementado. Si aparece un error de conexión, revisar el estado de Vite (`5173`) y Node.js (`3000`) en [`MANUAL_ERRORES.md`](MANUAL_ERRORES.md).

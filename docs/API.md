@@ -1,93 +1,42 @@
-# Documentación de API REST — PetGo 2.0
+# API REST — PetGo 2.0
 
-**Versión de desarrollo:** 0.1  
-**Base local:** `http://localhost:3000`  
-**Estado:** catálogo funcional; autenticación, reservas y administración pendientes.
+**Actualizado:** 20 de noviembre de 2026. **Base local:** `http://localhost:3000`. JSON; usar backend para todas las operaciones sensibles.
 
-## Convenciones
+| Método / ruta | Estado de código | Verificación |
+|---|---|---|
+| `GET /` | Implementado | Probado |
+| `GET /api/services` | Implementado, catálogo activo **actualmente público** | Probado con simulación + previamente manual |
+| `POST /api/auth/register` | Implementado | Pruebas simuladas; alta real NO verificada |
+| `POST /api/auth/login` | Implementado | Pruebas simuladas; inicio real NO verificado |
+| `GET /api/auth/me` | Middleware Bearer | Pruebas de acceso sin token y métodos |
+| `GET /api/pets` | Código de ruta añadido en desarrollo | **Pendiente comprobación HTTP y pruebas nuevas** |
+| `POST /api/pets` | Código de ruta añadido en desarrollo | **Pendiente comprobación HTTP y pruebas nuevas** |
+| Reservas, notificaciones, edición de perfil | No implementadas | Pendientes |
 
-- Las respuestas actuales utilizan JSON.
-- Los errores públicos no deben filtrar credenciales ni detalles internos.
-- La API utiliza Supabase desde el servidor. La clave secreta debe permanecer en `backend/.env`.
+## Autenticación
 
-## GET `/`
+`POST /api/auth/register` recibe `{ "nombre": "...", "email": "...", "password": "..." }`; valida longitud mínima de 12 caracteres y asigna metadatos `nombre`, **sin aceptar rol de administrador del cliente**. La migración del trigger de perfil aún no ha sido validada en vivo.
 
-Comprueba que el servidor está activo.
+`POST /api/auth/login` recibe `{ "email": "...", "password": "..." }`; el controlador devuelve `access_token`, `refresh_token`, `expires_in` y usuario en respuesta de éxito. **El frontend de desarrollo no persiste sesión; no publicar sin diseñar manejo seguro.**
 
-**200 OK** (versión posterior a la limpieza de MySQL):
+`GET /api/auth/me` requiere `Authorization: Bearer <token>` y responde con `id` y `email` cuando la autenticación es válida.
 
-```json
-{ "success": true, "message": "API PetGo 2.0 activa" }
-```
+## Mascotas (código nuevo, sin integración validada)
 
-## GET `/api/services`
+`GET /api/pets` requiere token; consulta registros filtrados por `req.user.id`.
 
-Devuelve únicamente los servicios cuyo campo `activo` es `true`.
-
-**200 OK** (los `id` reales son UUID distintos):
-
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": "<uuid>",
-      "nombre": "Baños",
-      "slug": "banos",
-      "descripcion": "Servicio de baño e higiene para mascotas.",
-      "imagen_path": null
-    },
-    {
-      "id": "<uuid>",
-      "nombre": "Paseos",
-      "slug": "paseos",
-      "descripcion": "Servicio de paseos para mascotas.",
-      "imagen_path": null
-    }
-  ]
-}
-```
-
-**500 Internal Server Error** si falla la consulta (texto previsto por el controlador):
+`POST /api/pets` requiere token y cuerpo por ejemplo:
 
 ```json
-{ "success": false, "error": "No fue posible obtener los servicios" }
+{ "nombre": "Max", "especie": "perro", "raza": "Criollo", "observaciones": "Prefiere paseos tranquilos" }
 ```
 
-**405 Method Not Allowed** para `POST /api/services`, confirmado en pruebas:
+Campos: `nombre` obligatorio (máximo 100), `especie` `perro` o `gato`, `raza` opcional (máximo 100), `observaciones` opcionales (máximo 1000), convertidas en columna `descripcion`. El servidor debe fijar `user_id` desde `req.user.id` aunque el cuerpo envíe otro ID.
 
-```json
-{ "success": false, "error": "Método no permitido" }
-```
+Respuestas previstas: 200 listado, 201 creación, 400 entrada inválida, 401 sin token, 405 método no admitido, 409 perfil ausente (`23503`), 503 fallo de datos. **Estos resultados de la ruta nueva aún no están verificados en ejecución real.**
 
-Cabecera esperada: `Allow: GET`.
+## Riesgos pendientes
 
-## Rutas desconocidas
-
-**404 Not Found**:
-
-```json
-{ "success": false, "error": "Ruta no encontrada" }
-```
-
-## Rutas previstas, NO implementadas
-
-- Inicio de sesión y registro por Supabase Auth.
-- Gestión de mascotas y perfiles.
-- Consulta de modalidades, precios y disponibilidad.
-- Creación, historial y cancelación de reservas.
-- Operaciones de administración protegidas.
-
-No consumir estas rutas desde el frontend hasta diseñar, implementar y probar sus contratos.
-
-## Pruebas manuales
-
-```powershell
-Invoke-RestMethod http://localhost:3000/
-Invoke-RestMethod http://localhost:3000/api/services | ConvertTo-Json -Depth 5
-try { Invoke-WebRequest -Uri http://localhost:3000/api/services -Method POST } catch { [int]$_.Exception.Response.StatusCode }
-```
-
-## Pendiente de especificar en OpenAPI
-
-Añadir `openapi.yaml` cuando estén definidos los endpoints de autenticación, validación de parámetros, operaciones de reservas y administración. No inventar contratos de funciones aún no desarrolladas.
+- La intención de producto es que las modalidades/precios detallados se vean solo tras login, pero `GET /api/services` sigue público. **Se necesita protección backend antes de producción**.
+- Esquema `petgo_v2` usa FORCE RLS; el cliente administrativo y los permisos de tabla deben probarse.
+- Las reservas deben calcular precios en el servidor y comprobar pertenencia de mascota, disponibilidad y permisos.

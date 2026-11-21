@@ -1,0 +1,300 @@
+
+/* PETGO 2.0 — MIS MASCOTAS */
+
+:root {
+  font-family: 'Nunito', sans-serif;
+  color: #292524;
+  background: #fffaf5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.oculto {
+  display: none !important;
+}
+
+/* ENCABEZADO */
+
+.encabezado {
+  background: #ffffff;
+  border-bottom: 1px solid #f0e8e2;
+}
+
+.barra {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo {
+  color: #ea580c;
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.volver {
+  color: #78716c;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.volver:hover {
+  color: #ea580c;
+}
+
+/* CONTENIDO */
+
+.contenedor {
+  max-width: 1100px;
+  margin: auto;
+  padding: 60px 24px 90px;
+}
+
+.cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 35px;
+}
+
+.etiqueta {
+  color: #ea580c;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(34px, 5vw, 48px);
+  font-weight: 400;
+  margin: 12px 0;
+}
+
+.cabecera p,
+.ayuda {
+  color: #78716c;
+  line-height: 1.7;
+}
+
+/* BOTONES */
+
+.boton-principal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 22px;
+  background: #ea580c;
+  border: 0;
+  border-radius: 13px;
+  color: #ffffff;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.boton-principal:hover {
+  background: #c2410c;
+}
+
+.boton-secundario {
+  padding: 14px 22px;
+  background: white;
+  color: #57534e;
+  border: 1px solid #e7ded5;
+  border-radius: 13px;
+  font-weight: 800;
+}
+
+/* PANEL PRINCIPAL */
+
+.panel-mascotas,
+.formulario-seccion {
+  background: #ffffff;
+  border: 1px solid #f0e8e2;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 10px 30px #70422a0a;
+}
+
+.panel-mascotas h2,
+.formulario-seccion h2 {
+  font-size: 23px;
+  margin: 0;
+}
+
+.estado-vacio {
+  text-align: center;
+  padding: 50px 15px;
+}
+
+.imagen-vacia {
+  width: 140px;
+  height: 140px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 22px;
+  background: #fff0df;
+  border-radius: 50%;
+  font-size: 70px;
+}
+
+.estado-vacio h3 {
+  font-size: 23px;
+  margin: 0 0 8px;
+}
+
+.estado-vacio p {
+  color: #78716c;
+  line-height: 1.7;
+  max-width: 370px;
+  margin: 0 auto;
+}
+
+/* FORMULARIO */
+
+.formulario-seccion {
+  margin-top: 25px;
+}
+
+.formulario-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.boton-cerrar {
+  border: none;
+  background: #fff2e8;
+  color: #9a3412;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+}
+
+.ayuda {
+  margin: 12px 0 25px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.campo label {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  border: 1px solid #e7ded5;
+  background: #fffdfa;
+  padding: 13px 15px;
+  border-radius: 12px;
+  color: #292524;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  outline: 2px solid #fdba74;
+  border-color: #ea580c;
+}
+
+.fila-campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.nota-formulario {
+  color: #a8a29e;
+  font-size: 12px;
+}
+
+.mensaje {
+  color: #9a3412;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+/* PIE */
+
+footer {
+  padding: 28px 15px;
+  color: #a8a29e;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* CELULARES */
+
+@media (max-width: 650px) {
+  .contenedor {
+    padding: 35px 18px 65px;
+  }
+
+  .cabecera {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .panel-mascotas,
+  .formulario-seccion {
+    padding: 22px;
+  }
+
+  .fila-campos {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .acciones {
+    flex-direction: column;
+  }
+
+  .acciones button {
+    width: 100%;
+  }
+
+  .volver {
+    font-size: 12px;
+  }
+}
