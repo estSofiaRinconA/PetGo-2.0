@@ -130,6 +130,7 @@ async function updateBooking(req,res,user) {
     if (error.code==='42501') return send(res,403,{success:false,error:'Acceso no autorizado.'});
     if (error.code==='P0002') return send(res,404,{success:false,error:'Solicitud no encontrada.'});
     if (error.code==='23514') return send(res,409,{success:false,error:'El estado actual no permite este cambio.'});
+    if (error.code==='23505') return send(res,409,{success:false,error:'Este horario ya esta confirmado para la misma modalidad. Selecciona otro horario antes de confirmar.'});
     console.error('Admin status update:',error.code);
     return send(res,503,{success:false,error:'No se pudo actualizar la solicitud.'});
   }
