@@ -1,19 +1,26 @@
 
-// =====================================================
-// PETGO 2.0 - REGISTRO E INICIO DE SESION
-// Frontend conectado exclusivamente a nuestra API
-// =====================================================
+/**
+ * PetGo 2.0
+ * Registro e inicio de sesion mediante nuestra API Node.js.
+ *
+ * El frontend nunca se conecta directamente a Supabase.
+ * Las sesiones se gestionan con cookies HttpOnly.
+ */
 
 const loginForm = document.getElementById('login-form');
 const registroForm = document.getElementById('registro-form');
 const mensaje = document.getElementById('mensaje');
 const boton = document.getElementById('submit-btn');
 
+let procesando = false;
+
 function mostrarMensaje(texto, tipo = 'error') {
   if (!mensaje) return;
 
   mensaje.textContent = texto;
-  mensaje.className = `mensaje ${tipo}`;
+  mensaje.className = tipo
+    ? `mensaje ${tipo}`
+    : 'mensaje';
 }
 
 async function enviarDatos(ruta, datos) {
@@ -26,11 +33,40 @@ async function enviarDatos(ruta, datos) {
     body: JSON.stringify(datos)
   });
 
-  const resultado = await respuesta.json();
+  let resultado;
+
+  try {
+    resultado = await respuesta.json();
+  } catch {
+    throw new Error(
+      'El servidor devolvio una respuesta inesperada.'
+    );
+  }
+
+  if (respuesta.status === 429) {
+    throw new Error(
+      'Se alcanzó temporalmente el límite de intentos. ' +
+      'Espera el tiempo indicado por el servicio antes ' +
+      'de volver a intentarlo.'
+    );
+  }
 
   if (!respuesta.ok || !resultado.success) {
+    const errorOriginal = String(resultado.error || '');
+
+    if (
+      /rate limit|too many|demasiados intentos|límite de/i
+        .test(errorOriginal)
+    ) {
+      throw new Error(
+        'Hay demasiados intentos de registro. ' +
+        'Espera antes de volver a intentarlo.'
+      );
+    }
+
     throw new Error(
-      resultado.error || 'No se pudo completar la solicitud.'
+      resultado.error ||
+      'No se pudo completar la solicitud.'
     );
   }
 
@@ -40,14 +76,15 @@ async function enviarDatos(ruta, datos) {
 async function procesarFormulario(evento, accion) {
   evento.preventDefault();
 
-  if (!boton) return;
-
-  mostrarMensaje('');
+  // Impide envios duplicados mientras hay una solicitud activa.
+  if (procesando) return;
 
   const formulario = evento.currentTarget;
   const datos = Object.fromEntries(
     new FormData(formulario)
   );
+
+  mostrarMensaje('');
 
   if (accion === 'register') {
     if (datos.password !== datos.confirmar) {
@@ -55,7 +92,10 @@ async function procesarFormulario(evento, accion) {
       return;
     }
 
-    if (datos.password.length < 12) {
+    if (
+      typeof datos.password !== 'string' ||
+      datos.password.length < 12
+    ) {
       mostrarMensaje(
         'La contraseña debe tener al menos 12 caracteres.'
       );
@@ -65,50 +105,68 @@ async function procesarFormulario(evento, accion) {
     delete datos.confirmar;
   }
 
-  const textoOriginal = boton.textContent;
+  procesando = true;
 
-  boton.disabled = true;
-  boton.textContent = 'Procesando...';
+  if (boton) {
+    boton.disabled = true;
+    boton.textContent = accion === 'register'
+      ? 'Creando cuenta...'
+      : 'Iniciando sesión...';
+  }
+
+  let completado = false;
 
   try {
-    const resultado = await enviarDatos(
-      accion,
-      datos
-    );
+    await enviarDatos(accion, datos);
+
+    completado = true;
 
     if (accion === 'register') {
       mostrarMensaje(
-        resultado.message ||
-        'Registro procesado. Revisa tu correo.',
+        '¡Registro recibido correctamente! ' +
+        'Revisa tu correo para confirmar tu cuenta. ' +
+        'En 3 segundos te llevaremos a Iniciar sesión.',
         'exito'
       );
 
       formulario.reset();
+
+      // Mantener bloqueado el formulario para evitar
+      // solicitudes duplicadas durante la redireccion.
+      window.setTimeout(() => {
+        window.location.replace('/login.html');
+      }, 3000);
+
       return;
     }
 
-    // El backend ya guardo la sesion en cookies
-    // HttpOnly. No usamos localStorage.
-
     mostrarMensaje(
-      'Inicio de sesión correcto. Abriendo tu espacio...',
+      '¡Inicio de sesión correcto! ' +
+      'Entrando a tu panel...',
       'exito'
     );
 
     formulario.reset();
 
-    window.location.assign('/panel.html');
+    window.location.replace('/panel.html');
 
   } catch (error) {
     mostrarMensaje(
       error instanceof TypeError
-        ? 'No se pudo conectar con la API de PetGo.'
+        ? 'No se pudo conectar con el servidor de PetGo.'
         : error.message
     );
-
   } finally {
-    boton.disabled = false;
-    boton.textContent = textoOriginal;
+    if (!completado) {
+      procesando = false;
+
+      if (boton) {
+        boton.disabled = false;
+        boton.textContent = accion === 'register'
+          ? 'Crear mi cuenta'
+          : 'Iniciar sesión';
+      }
+    }
   }
 }
 

@@ -10,7 +10,7 @@ const rutas = new Map([
   ['/api/auth/me',['GET']], ['/api/auth/logout',['POST']],
   ['/api/profile',['GET','PATCH']], ['/api/pets',['GET','POST']],
   ['/api/services',['GET']], ['/api/reservations',['GET','POST']],
-  ['/api/notifications',['GET']]
+  ['/api/notifications',['GET']], ['/api/notifications/read',['PATCH']]
 ]);
 const server = http.createServer(async(req,res)=>{
   if(req.method==='OPTIONS'){res.writeHead(204);return res.end();}
@@ -36,6 +36,10 @@ const server = http.createServer(async(req,res)=>{
   if(pathname==='/api/reservations'){
     try{return await require('./routes/reservations.routes').handleReservations(req,res);}
     catch(err){console.error('Reservations:',err.name||'Error');return responder(res,503,{success:false,error:'Reservas no disponible.'});}
+  }
+  if(pathname==='/api/notifications' || pathname==='/api/notifications/read'){
+    try{return await require('./routes/notifications.routes').handleNotifications(req,res,pathname);}
+    catch(err){console.error('Notifications:',err.name||'Error');return responder(res,503,{success:false,error:'Notificaciones no disponibles.'});}
   }
   if(pathname==='/api/pets'){
     try{return await require('./routes/pets.routes').handlePets(req,res);}

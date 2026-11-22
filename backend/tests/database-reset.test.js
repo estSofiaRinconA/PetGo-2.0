@@ -13,11 +13,9 @@ test('La API propia sigue activa',async()=>{
   const url=await iniciarServidor();const r=await fetch(url+'/');
   assert.equal(r.status,200);assert.equal((await r.json()).success,true);
 });
-test('Las rutas restantes siguen pendientes',async()=>{
+test('Notificaciones sin sesion requieren autenticacion',async()=>{
   const url=await iniciarServidor();
-  for(const path of ['/api/notifications']){
-    assert.equal((await fetch(url+path)).status,503);
-  }
+  assert.equal((await fetch(url+'/api/notifications')).status,401);
 });
 test('Una ruta desconocida devuelve 404',async()=>{
   const url=await iniciarServidor();assert.equal((await fetch(url+'/api/ruta-inexistente')).status,404);
