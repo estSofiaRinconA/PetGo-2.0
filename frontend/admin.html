@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administración | PetGo 2.0</title>
+  <style id="petgo-private-style">html{visibility:hidden}</style>
+  <script type="module" src="/js/private-page.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
+  <script type="module" src="/js/admin.js"></script>
+</head>
+<body>
+  <header class="top"><a class="brand" href="/panel.html">🐾 PetGo</a><span>Administración de solicitudes</span><a href="/panel.html">Panel de cliente</a></header>
+  <main class="wrap">
+    <div class="intro"><div><span class="eyebrow">ACCESO RESTRINGIDO</span><h1>Solicitudes de servicio</h1><p>Confirma solicitudes pendientes y registra servicios completados. Una solicitud pendiente todavía no implica disponibilidad confirmada.</p></div><button type="button" id="refresh">Actualizar lista</button></div>
+    <div id="message" role="status" aria-live="polite" class="message">Comprobando permisos...</div>
+    <section id="admin-content" hidden aria-label="Solicitudes"><div class="filters"><label for="filter">Filtrar por estado</label><select id="filter"><option value="todos">Todos</option><option value="pendiente">Pendientes</option><option value="confirmada">Confirmadas</option><option value="completada">Completadas</option><option value="cancelada">Canceladas</option></select></div><div id="bookings" class="cards"></div></section>
+  </main>
+</body>
+</html>
