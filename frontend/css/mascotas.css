@@ -298,3 +298,14 @@ footer {
     font-size: 12px;
   }
 }
+
+/* MASCOTAS REALES — TARJETAS */
+.lista-mascotas { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; margin-top:22px; }
+.mascota-tarjeta { border:1px solid #f1e2d6; background:#fffaf6; border-radius:18px; padding:22px; min-width:0; }
+.mascota-icono { width:48px; height:48px; display:grid; place-items:center; border-radius:14px; background:#ffedd5; font-size:25px; margin-bottom:12px; }
+.mascota-tarjeta h3 { margin:0 0 7px; font-size:20px; color:#292524; overflow-wrap:anywhere; }
+.mascota-tarjeta p { margin:7px 0 0; color:#78716c; line-height:1.6; overflow-wrap:anywhere; }
+.mascota-etiqueta { color:#c2410c; font-size:13px; font-weight:800; }
+.mensaje-error { color:#b91c1c; }
+.mensaje-exito { color:#166534; }
+button:disabled { opacity:.65; cursor:wait; }
