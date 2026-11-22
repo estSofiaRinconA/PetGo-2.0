@@ -266,3 +266,12 @@ footer {
     font-size: 20px;
   }
 }
+
+/* Paso 86 — Cancelacion de solicitudes pendientes */
+.reserva-acciones { margin-top: 18px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.boton-cancelar-reserva { cursor: pointer; border: 1px solid #c2410c; background: #fff7ed; color: #9a3412; padding: 11px 16px; border-radius: 12px; font: inherit; font-weight: 800; }
+.boton-cancelar-reserva:hover { background: #ffedd5; }
+.boton-cancelar-reserva:focus-visible { outline: 3px solid #ea580c; outline-offset: 2px; }
+.boton-cancelar-reserva:disabled { cursor: wait; opacity: .6; }
+.reserva .error-cancelar-reserva { color: #b91c1c; font-weight: 700; }
+.reserva .reserva-nota-cancelada { color: #78716c; font-style: italic; }

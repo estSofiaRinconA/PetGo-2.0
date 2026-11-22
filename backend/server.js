@@ -9,7 +9,7 @@ const rutas = new Map([
   ['/api/auth/register',['POST']], ['/api/auth/login',['POST']],
   ['/api/auth/me',['GET']], ['/api/auth/logout',['POST']],
   ['/api/profile',['GET','PATCH']], ['/api/pets',['GET','POST']], ['/api/pets/item',['PATCH','DELETE']],
-  ['/api/services',['GET']], ['/api/reservations',['GET','POST']],
+  ['/api/services',['GET']], ['/api/reservations',['GET','POST']], ['/api/reservations/cancel',['PATCH']],
   ['/api/notifications',['GET']], ['/api/notifications/read',['PATCH']]
 ]);
 const server = http.createServer(async(req,res)=>{
@@ -33,8 +33,8 @@ const server = http.createServer(async(req,res)=>{
     try{return await require('./routes/services.routes').handleServices(req,res);}
     catch(err){console.error('Services:',err.name||'Error');return responder(res,503,{success:false,error:'Catalogo no disponible.'});}
   }
-  if(pathname==='/api/reservations'){
-    try{return await require('./routes/reservations.routes').handleReservations(req,res);}
+  if(pathname==='/api/reservations' || pathname==='/api/reservations/cancel'){
+    try{return await require('./routes/reservations.routes').handleReservations(req,res,pathname);}
     catch(err){console.error('Reservations:',err.name||'Error');return responder(res,503,{success:false,error:'Reservas no disponible.'});}
   }
   if(pathname==='/api/notifications' || pathname==='/api/notifications/read'){

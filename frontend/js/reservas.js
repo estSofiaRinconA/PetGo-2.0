@@ -3,6 +3,7 @@ const loading = document.getElementById('estado-cargando');
 const empty = document.getElementById('estado-vacio');
 const failure = document.getElementById('estado-error');
 const list = document.getElementById('lista-reservas');
+let saving = false;
 
 function show(name) {
   loading.classList.toggle('oculto', name !== 'loading');
@@ -51,6 +52,15 @@ async function loadBookings() {
       );
       if (booking.status === 'pendiente') {
         article.append(create('p', '', 'Solicitud recibida; todavía no es una reserva confirmada.'));
+        const actions = create('div', 'reserva-acciones');
+        const cancel = create('button', 'boton-cancelar-reserva', 'Cancelar solicitud');
+        cancel.type = 'button';
+        cancel.addEventListener('click', () => cancelRequest(booking, cancel));
+        actions.append(cancel);
+        article.append(actions);
+      }
+      if (booking.status === 'cancelada') {
+        article.append(create('p', 'reserva-nota-cancelada', 'Esta solicitud fue cancelada.'));
       }
       list.append(article);
     }
@@ -60,6 +70,43 @@ async function loadBookings() {
       ? 'Revisa la conexión con la API de PetGo.'
       : error.message;
     show('error');
+  }
+}
+async function cancelRequest(booking, button) {
+  if (saving) return;
+  const agreed = window.confirm('¿Quieres cancelar esta solicitud pendiente? Esta acción no se puede deshacer.');
+  if (!agreed) return;
+  saving = true;
+  button.disabled = true;
+  button.textContent = 'Cancelando...';
+  try {
+    const response = await fetch('/api/reservations/cancel', {
+      method: 'PATCH', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: booking.id })
+    });
+    if (response.status === 401) {
+      window.location.replace('/login.html');
+      return;
+    }
+    const result = await response.json();
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || 'No se pudo cancelar la solicitud.');
+    }
+    await loadBookings();
+  } catch (error) {
+    const notice = document.createElement('p');
+    notice.className = 'error-cancelar-reserva';
+    notice.setAttribute('role', 'alert');
+    notice.textContent = error instanceof TypeError
+      ? 'No pudimos conectar con la API. Comprueba la conexión.'
+      : error.message;
+    button.parentNode.querySelector('.error-cancelar-reserva')?.remove();
+    button.parentNode.append(notice);
+  } finally {
+    saving = false;
+    button.disabled = false;
+    button.textContent = 'Cancelar solicitud';
   }
 }
 loadBookings();

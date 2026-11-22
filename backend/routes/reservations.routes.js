@@ -171,15 +171,48 @@ async function createBooking(req, res, user) {
   }
   return send(res, 201, { success: true, reservation: data, message: 'Solicitud registrada. Aun no esta confirmada.' });
 }
-async function handleReservations(req, res) {
+function validateCancel(body) {
+  if (!body || Object.keys(body).length !== 1 || typeof body.id !== 'string' || !UUID.test(body.id)) return null;
+  return body.id;
+}
+async function cancelBooking(req, res, user) {
+  const body = await readJSON(req);
+  const id = validateCancel(body);
+  if (!id) return send(res, 400, { success: false, error: 'Solicitud de cancelacion invalida.' });
+
+  // Filtro de propietario Y estado, aplicados en la misma sentencia UPDATE.
+  const { data, error } = await supabaseAdmin.from('bookings')
+    .update({ status: 'cancelada' })
+    .eq('id', id).eq('user_id', user.id).eq('status', 'pendiente')
+    .select('id,status,scheduled_at').maybeSingle();
+  if (error) {
+    console.error('Reservations cancel:', error.code);
+    return send(res, 503, { success: false, error: 'No pudimos cancelar la solicitud.' });
+  }
+  if (data) return send(res, 200, {
+    success: true, reservation: data, message: 'Solicitud cancelada correctamente.'
+  });
+
+  // El usuario no puede distinguir reservas de otras cuentas de IDs inexistentes.
+  const { data: owned, error: lookupError } = await supabaseAdmin.from('bookings')
+    .select('id,status').eq('id', id).eq('user_id', user.id).maybeSingle();
+  if (lookupError) {
+    console.error('Reservations cancel lookup:', lookupError.code);
+    return send(res, 503, { success: false, error: 'No pudimos comprobar la solicitud.' });
+  }
+  if (!owned) return send(res, 404, { success: false, error: 'Solicitud no encontrada.' });
+  return send(res, 409, { success: false, error: 'Solo se pueden cancelar solicitudes pendientes.' });
+}
+async function handleReservations(req, res, pathname = '/api/reservations') {
   try {
-    if (req.method === 'POST' && !validOrigin(req)) {
+    if (['POST', 'PATCH'].includes(req.method) && !validOrigin(req)) {
       return send(res, 403, { success: false, error: 'Origen no permitido.' });
     }
     const user = await getUser(req, res);
     if (!user) return send(res, 401, { success: false, error: 'Debes iniciar sesion.' });
-    if (req.method === 'GET') return await listBookings(res, user);
-    if (req.method === 'POST') return await createBooking(req, res, user);
+    if (pathname === '/api/reservations' && req.method === 'GET') return await listBookings(res, user);
+    if (pathname === '/api/reservations' && req.method === 'POST') return await createBooking(req, res, user);
+    if (pathname === '/api/reservations/cancel' && req.method === 'PATCH') return await cancelBooking(req, res, user);
     return send(res, 405, { success: false, error: 'Metodo no permitido.' });
   } catch (error) {
     if ([400, 413, 415].includes(error.status)) return send(res, error.status, { success: false, error: error.message });
@@ -187,4 +220,4 @@ async function handleReservations(req, res) {
     return send(res, 503, { success: false, error: 'Servicio de reservas no disponible.' });
   }
 }
-module.exports = { handleReservations, validRequest };
+module.exports = { handleReservations, validRequest, validateCancel };
