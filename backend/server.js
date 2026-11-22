@@ -11,7 +11,7 @@ const rutas = new Map([
   ['/api/profile',['GET','PATCH']], ['/api/pets',['GET','POST']], ['/api/pets/item',['PATCH','DELETE']],
   ['/api/services',['GET']], ['/api/reservations',['GET','POST']], ['/api/reservations/cancel',['PATCH']],
   ['/api/notifications',['GET']], ['/api/notifications/read',['PATCH']],
-  ['/api/admin/me',['GET']], ['/api/admin/bookings',['GET']], ['/api/admin/bookings/status',['PATCH']]
+  ['/api/admin/me',['GET']], ['/api/admin/bookings',['GET']], ['/api/admin/bookings/status',['PATCH']], ['/api/admin/schedule',['GET','PATCH']]
 ]);
 const server = http.createServer(async(req,res)=>{
   if(req.method==='OPTIONS'){res.writeHead(204);return res.end();}

@@ -144,6 +144,8 @@ async function handleAdmin(req,res,pathname) {
     const permission=await checkAdmin(user);
     if (permission.error) return send(res,503,{success:false,error:'No se pudieron comprobar los permisos.'});
     if (!permission.allowed) return send(res,403,{success:false,error:'Acceso reservado al personal autorizado.'});
+    if (pathname==='/api/admin/schedule' && ['GET','PATCH'].includes(req.method))
+      return await require('./schedule.routes').handleSchedule(req,res,user);
     if (pathname==='/api/admin/me' && req.method==='GET')
       return send(res,200,{success:true,role:'admin'});
     if (pathname==='/api/admin/bookings' && req.method==='GET') return await listBookings(res);
