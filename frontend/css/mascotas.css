@@ -309,3 +309,10 @@ footer {
 .mensaje-error { color:#b91c1c; }
 .mensaje-exito { color:#166534; }
 button:disabled { opacity:.65; cursor:wait; }
+
+/* Acciones por mascota y aviso de eliminacion */
+.mascota-acciones { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+.mascota-acciones button { padding:10px 15px; border-radius:11px; font-size:13px; font-weight:800; }
+.mascota-editar { color:#9a3412; border:1px solid #fed7aa; background:#fff7ed; }
+.mascota-eliminar { color:#b91c1c; border:1px solid #fecaca; background:#fff; }
+.mascota-acciones button:disabled { opacity:.55; cursor:not-allowed; }

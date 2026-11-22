@@ -8,7 +8,7 @@ function responder(res,codigo,contenido,extra={}) {
 const rutas = new Map([
   ['/api/auth/register',['POST']], ['/api/auth/login',['POST']],
   ['/api/auth/me',['GET']], ['/api/auth/logout',['POST']],
-  ['/api/profile',['GET','PATCH']], ['/api/pets',['GET','POST']],
+  ['/api/profile',['GET','PATCH']], ['/api/pets',['GET','POST']], ['/api/pets/item',['PATCH','DELETE']],
   ['/api/services',['GET']], ['/api/reservations',['GET','POST']],
   ['/api/notifications',['GET']], ['/api/notifications/read',['PATCH']]
 ]);
@@ -41,7 +41,7 @@ const server = http.createServer(async(req,res)=>{
     try{return await require('./routes/notifications.routes').handleNotifications(req,res,pathname);}
     catch(err){console.error('Notifications:',err.name||'Error');return responder(res,503,{success:false,error:'Notificaciones no disponibles.'});}
   }
-  if(pathname==='/api/pets'){
+  if(pathname==='/api/pets' || pathname==='/api/pets/item'){
     try{return await require('./routes/pets.routes').handlePets(req,res);}
     catch(err){console.error('Pets:',err.name||'Error');return responder(res,503,{success:false,error:'Mascotas no disponible.'});}
   }
