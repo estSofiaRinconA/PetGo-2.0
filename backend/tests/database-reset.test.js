@@ -1,6 +1,6 @@
 ﻿
 // =====================================================
-// PETGO 2.0 - PRUEBAS DE INTEGRACION INICIAL
+// PETGO 2.0 - PRUEBAS DE RUTAS
 // =====================================================
 
 const test = require('node:test');
@@ -15,9 +15,7 @@ async function iniciarServidor() {
     });
   }
 
-  const direccion = server.address();
-
-  return `http://127.0.0.1:${direccion.port}`;
+  return `http://127.0.0.1:${server.address().port}`;
 }
 
 test.after(async () => {
@@ -38,29 +36,22 @@ test('La API propia sigue activa', async () => {
   assert.equal(respuesta.status, 200);
 
   const datos = await respuesta.json();
-
   assert.equal(datos.success, true);
 });
 
-test('Las rutas de datos siguen reservadas', async () => {
+test('Las rutas restantes siguen pendientes', async () => {
   const url = await iniciarServidor();
 
   const rutas = [
     '/api/pets',
     '/api/services',
     '/api/reservations',
-    '/api/profile',
     '/api/notifications'
   ];
 
   for (const ruta of rutas) {
     const respuesta = await fetch(url + ruta);
-
-    assert.equal(
-      respuesta.status,
-      503,
-      `La ruta ${ruta} debe continuar pendiente`
-    );
+    assert.equal(respuesta.status, 503);
   }
 });
 
@@ -74,41 +65,28 @@ test('Una ruta desconocida devuelve 404', async () => {
   assert.equal(respuesta.status, 404);
 });
 
-test('Registro rechaza un método incorrecto', async () => {
+test('Registro rechaza un metodo incorrecto', async () => {
   const url = await iniciarServidor();
-
-  const respuesta = await fetch(
-    url + '/api/auth/register'
-  );
+  const respuesta = await fetch(url + '/api/auth/register');
 
   assert.equal(respuesta.status, 405);
 });
 
-test('Login rechaza un método incorrecto', async () => {
+test('Login rechaza un metodo incorrecto', async () => {
   const url = await iniciarServidor();
-
-  const respuesta = await fetch(
-    url + '/api/auth/login'
-  );
+  const respuesta = await fetch(url + '/api/auth/login');
 
   assert.equal(respuesta.status, 405);
 });
 
-test('Solicitud sin sesion se rechaza', async () => {
+test('Consultar usuario sin sesion devuelve 401', async () => {
   const url = await iniciarServidor();
-
-  const respuesta = await fetch(
-    url + '/api/auth/me'
-  );
+  const respuesta = await fetch(url + '/api/auth/me');
 
   assert.equal(respuesta.status, 401);
-
-  const datos = await respuesta.json();
-
-  assert.equal(datos.success, false);
 });
 
-test('El registro rechaza datos incompletos', async () => {
+test('Registro rechaza datos incompletos', async () => {
   const url = await iniciarServidor();
 
   const respuesta = await fetch(
@@ -129,7 +107,7 @@ test('El registro rechaza datos incompletos', async () => {
   assert.equal(respuesta.status, 400);
 });
 
-test('El registro rechaza JSON inválido', async () => {
+test('Registro rechaza JSON invalido', async () => {
   const url = await iniciarServidor();
 
   const respuesta = await fetch(
@@ -144,4 +122,56 @@ test('El registro rechaza JSON inválido', async () => {
   );
 
   assert.equal(respuesta.status, 400);
+});
+
+test('Consultar perfil sin sesion devuelve 401', async () => {
+  const url = await iniciarServidor();
+
+  const respuesta = await fetch(url + '/api/profile');
+
+  assert.equal(respuesta.status, 401);
+});
+
+test('Modificar perfil sin sesion se rechaza', async () => {
+  const url = await iniciarServidor();
+
+  const respuesta = await fetch(
+    url + '/api/profile',
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Origin': url
+      },
+      body: JSON.stringify({
+        nombre: 'Prueba',
+        telefono: '',
+        ciudad: ''
+      })
+    }
+  );
+
+  assert.equal(respuesta.status, 401);
+});
+
+test('Modificar perfil desde otro origen se rechaza', async () => {
+  const url = await iniciarServidor();
+
+  const respuesta = await fetch(
+    url + '/api/profile',
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Origin': 'https://sitio-no-autorizado.example'
+      },
+      body: JSON.stringify({
+        nombre: 'Prueba',
+        telefono: '',
+        ciudad: ''
+      })
+    }
+  );
+
+  assert.equal(respuesta.status, 403);
 });

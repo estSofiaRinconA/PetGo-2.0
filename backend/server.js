@@ -1,7 +1,7 @@
 ﻿
 // ======================================================
 // PETGO 2.0 - API PROPIA NODE.JS
-// Autenticacion y sesiones HTTP
+// Autenticacion y perfil real
 // ======================================================
 
 const http = require('node:http');
@@ -24,10 +24,11 @@ const rutas = new Map([
   ['/api/auth/me', ['GET']],
   ['/api/auth/logout', ['POST']],
 
+  ['/api/profile', ['GET', 'PATCH']],
+
   ['/api/services', ['GET']],
   ['/api/pets', ['GET', 'POST']],
   ['/api/reservations', ['GET', 'POST']],
-  ['/api/profile', ['GET', 'PATCH']],
   ['/api/notifications', ['GET']]
 ]);
 
@@ -47,9 +48,11 @@ const server = http.createServer(async (req, res) => {
   } catch {
     return responder(res, 400, {
       success: false,
-      error: 'URL inválida'
+      error: 'URL invalida'
     });
   }
+
+  // Comprobar estado de la API
 
   if (pathname === '/' && req.method === 'GET') {
     return responder(res, 200, {
@@ -81,35 +84,57 @@ const server = http.createServer(async (req, res) => {
     );
   }
 
+  // Autenticacion
+
   if (pathname.startsWith('/api/auth/')) {
     try {
       const { manejarAuth } = require(
         './routes/auth.routes'
       );
 
-      return await manejarAuth(
-        req,
-        res,
-        pathname
-      );
+      return await manejarAuth(req, res, pathname);
     } catch (error) {
       console.error(
-        'Autenticación no disponible:',
+        'Autenticacion no disponible:',
         error.name || 'Error'
       );
 
       return responder(res, 503, {
         success: false,
-        error: 'Servicio de autenticación no disponible.'
+        error: 'Servicio de autenticacion no disponible.'
       });
     }
   }
 
+  // Perfil del usuario autenticado
+
+  if (pathname === '/api/profile') {
+    try {
+      const { manejarPerfil } = require(
+        './routes/profile.routes'
+      );
+
+      return await manejarPerfil(req, res);
+    } catch (error) {
+      console.error(
+        'Perfil no disponible:',
+        error.name || 'Error'
+      );
+
+      return responder(res, 503, {
+        success: false,
+        error: 'Servicio de perfil no disponible.'
+      });
+    }
+  }
+
+  // Modulos que implementaremos posteriormente
+
   return responder(res, 503, {
     success: false,
     error:
-      'Función temporalmente no disponible: ' +
-      'integración pendiente.'
+      'Funcion temporalmente no disponible: ' +
+      'integracion pendiente.'
   });
 });
 
