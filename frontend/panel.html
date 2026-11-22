@@ -161,7 +161,7 @@
           </span>
 
           <h1>
-            ¡Hola! <span aria-hidden="true">👋</span>
+            ¡Hola, <span id="saludo-nombre">...</span>! <span aria-hidden="true">👋</span>
           </h1>
 
           <p>
@@ -303,46 +303,25 @@
         </section>
 
 
-        <!-- TARJETA INFORMATIVA -->
-        <section
-          class="panel-tarjeta panel-actividad"
-          aria-labelledby="titulo-actividad"
-        >
-
-          <h2 id="titulo-actividad">
-
-            <span aria-hidden="true">🐾</span>
-
-            Tu espacio, a tu manera
-
-          </h2>
-
-
-          <div class="actividad-contenido">
-
-            <div
-              class="actividad-icono"
-              aria-hidden="true"
-            >
-              🧡
-            </div>
-
-            <h3>
-              Todo listo para comenzar
-            </h3>
-
-            <p>
-              Registra a tu mascota y elige el servicio
-              que mejor se adapte a sus necesidades.
-            </p>
-
-            <p class="actividad-nota">
-              Aquí aparecerá información útil de tu cuenta
-              cuando conectemos el panel.
-            </p>
-
+        <!-- RESUMEN REAL DE LA CUENTA -->
+        <section class="panel-tarjeta panel-actividad" aria-labelledby="titulo-actividad">
+          <h2 id="titulo-actividad"><span aria-hidden="true">📊</span> Mi actividad</h2>
+          <p id="panel-mensaje" class="panel-mensaje" role="status" aria-live="polite">Cargando tus datos...</p>
+          <div class="resumen-grid" aria-label="Resumen de actividad">
+            <a class="resumen-dato" href="/mascotas.html">
+              <span id="total-mascotas" class="resumen-numero">—</span>
+              <span>Mascotas registradas</span>
+            </a>
+            <a class="resumen-dato" href="/reservas.html">
+              <span id="total-pendientes" class="resumen-numero">—</span>
+              <span>Solicitudes pendientes</span>
+            </a>
           </div>
-
+          <div class="proxima-solicitud">
+            <h3>Próxima solicitud</h3>
+            <p id="proxima-reserva">Cargando...</p>
+            <a href="/reservas.html" class="proxima-enlace">Ver mis reservas →</a>
+          </div>
         </section>
 
       </div>

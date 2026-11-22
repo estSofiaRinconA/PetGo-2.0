@@ -108,3 +108,81 @@ botonCerrarSesion.addEventListener('click',async()=>{
 });
 // Una consulta al abrir el panel; no hay sondeo continuo ni solicitudes repetidas.
 cargarNotificaciones();
+
+
+// PASO 88 — Datos reales del panel, sin consultas directas a Supabase.
+function nombreParaSaludo(nombre) {
+  // El saludo evita mostrar emails y limita la longitud del texto visible.
+  const limpio = typeof nombre === 'string' ? nombre.trim() : '';
+  return (limpio.split(/\s+/)[0] || 'bienvenido').slice(0, 40);
+}
+function fechaSolicitud(valor) {
+  const fecha = new Date(valor);
+  if (Number.isNaN(fecha.getTime())) return 'Fecha no disponible';
+  return new Intl.DateTimeFormat('es-CO', {
+    dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/Bogota'
+  }).format(fecha);
+}
+async function cargarResumenPanel() {
+  const mensaje = document.getElementById('panel-mensaje');
+  const saludo = document.getElementById('saludo-nombre');
+  const mascotasNodo = document.getElementById('total-mascotas');
+  const pendientesNodo = document.getElementById('total-pendientes');
+  const proximaNodo = document.getElementById('proxima-reserva');
+  if (!mensaje || !saludo || !mascotasNodo || !pendientesNodo || !proximaNodo) return;
+
+  // allSettled permite mostrar información disponible si falla un módulo.
+  const resultados = await Promise.allSettled([
+    api('/api/profile'),
+    api('/api/pets'),
+    api('/api/reservations')
+  ]);
+  const [perfil, mascotas, reservas] = resultados;
+  const errores = [];
+
+  if (perfil.status === 'fulfilled') {
+    saludo.textContent = nombreParaSaludo(perfil.value.profile?.nombre);
+  } else {
+    saludo.textContent = 'bienvenido';
+    errores.push('perfil');
+  }
+
+  if (mascotas.status === 'fulfilled' && Array.isArray(mascotas.value.pets)) {
+    mascotasNodo.textContent = String(mascotas.value.pets.length);
+  } else {
+    mascotasNodo.textContent = '—';
+    errores.push('mascotas');
+  }
+
+  if (reservas.status === 'fulfilled' && Array.isArray(reservas.value.reservations)) {
+    const todas = reservas.value.reservations;
+    const pendientes = todas.filter(r => r.status === 'pendiente');
+    pendientesNodo.textContent = String(pendientes.length);
+    const ahora = Date.now();
+    const futuras = todas.filter(r =>
+      (r.status === 'pendiente' || r.status === 'confirmada') &&
+      Number.isFinite(new Date(r.scheduled_at).getTime()) &&
+      new Date(r.scheduled_at).getTime() >= ahora
+    ).sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+    if (futuras.length) {
+      const proxima = futuras[0];
+      const estado = proxima.status === 'confirmada' ? 'Confirmada' : 'Pendiente de confirmación';
+      proximaNodo.textContent = `${proxima.service_name || 'Servicio'} · ${proxima.pet_name || 'Mascota'} · ${fechaSolicitud(proxima.scheduled_at)} · ${estado}`;
+    } else {
+      proximaNodo.textContent = 'No tienes próximas solicitudes activas.';
+    }
+  } else {
+    pendientesNodo.textContent = '—';
+    proximaNodo.textContent = 'No se pudieron cargar tus solicitudes.';
+    errores.push('reservas');
+  }
+
+  if (errores.length) {
+    mensaje.textContent = 'No se pudo cargar: ' + errores.join(', ') + '. Puedes volver a actualizar la página.';
+    mensaje.classList.add('panel-error');
+  } else {
+    mensaje.textContent = '';
+    mensaje.classList.remove('panel-error');
+  }
+}
+cargarResumenPanel();
