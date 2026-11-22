@@ -15,7 +15,7 @@ test('La API propia sigue activa',async()=>{
 });
 test('Las rutas restantes siguen pendientes',async()=>{
   const url=await iniciarServidor();
-  for(const path of ['/api/reservations','/api/notifications']){
+  for(const path of ['/api/notifications']){
     assert.equal((await fetch(url+path)).status,503);
   }
 });
