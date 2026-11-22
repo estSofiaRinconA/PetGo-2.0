@@ -1,15 +1,48 @@
+﻿
+// ======================================================
+// PETGO 2.0 - API PROPIA NODE.JS
+// Estado: sin conexion a bases de datos
+// ======================================================
 
 const http = require('node:http');
-const servicesRoutes = require('./routes/services.routes');
-const authRoutes = require('./routes/auth.routes');
-const petsRoutes = require('./routes/pets.routes');
 
 const PORT = Number(process.env.PORT || 3000);
 
+// ------------------------------------------------------
+// RESPUESTAS JSON
+// ------------------------------------------------------
+
+function responder(res, codigo, contenido, extra = {}) {
+  res.writeHead(codigo, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Cache-Control': 'no-store',
+    ...extra
+  });
+
+  return res.end(JSON.stringify(contenido));
+}
+
+// ------------------------------------------------------
+// RUTAS RESERVADAS PARA LA NUEVA IMPLEMENTACION
+// ------------------------------------------------------
+
+const rutasPendientes = new Map([
+  ['/api/services', ['GET']],
+  ['/api/auth/register', ['POST']],
+  ['/api/auth/login', ['POST']],
+  ['/api/auth/me', ['GET']],
+  ['/api/pets', ['GET', 'POST']],
+  ['/api/reservations', ['GET', 'POST']],
+  ['/api/profile', ['GET', 'PATCH']],
+  ['/api/notifications', ['GET']]
+]);
+
+// ------------------------------------------------------
+// SERVIDOR HTTP
+// ------------------------------------------------------
+
 const server = http.createServer((req, res) => {
-  // Configuración temporal para desarrollo local.
-  // Los orígenes permitidos se configurarán antes del frontend.
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  // Respuesta a solicitudes OPTIONS
 
   if (req.method === 'OPTIONS') {
     res.writeHead(204);
@@ -19,64 +52,79 @@ const server = http.createServer((req, res) => {
   let pathname;
 
   try {
-    const parsedUrl = new URL(
+    pathname = new URL(
       req.url,
       `http://${req.headers.host || 'localhost'}`
-    );
-
-    pathname = parsedUrl.pathname;
+    ).pathname;
   } catch {
-    res.writeHead(400);
-    return res.end(JSON.stringify({
+    return responder(res, 400, {
       success: false,
-      error: 'URL inválida'
-    }));
+      error: 'URL invalida'
+    });
   }
 
-  // Ruta de estado
-  if (pathname === '/') {
-    res.writeHead(200);
-    return res.end(JSON.stringify({
+  // Comprobar que nuestra API esta activa
+
+  if (pathname === '/' && req.method === 'GET') {
+    return responder(res, 200, {
       success: true,
-      message: 'API PetGo 2.0 activa'
-    }));
+      message: 'API PetGo 2.0 activa',
+      database: 'sin configurar'
+    });
   }
 
-  // Catálogo de servicios
-  if (
-    pathname === '/api/services' ||
-    pathname.startsWith('/api/services/')
-  ) {
-    return servicesRoutes(req, res, pathname);
+  // Rutas que posteriormente usaran la nueva base
+
+  const metodos = rutasPendientes.get(pathname);
+
+  if (metodos) {
+    if (!metodos.includes(req.method)) {
+      return responder(
+        res,
+        405,
+        {
+          success: false,
+          error: 'M\u00e9todo no permitido'
+        },
+        {
+          Allow: metodos.join(', ')
+        }
+      );
+    }
+
+    return responder(res, 503, {
+      success: false,
+      error: (
+        'Funcion temporalmente no disponible: ' +
+        'nueva base de datos pendiente'
+      )
+    });
   }
 
-  // Autenticación e identidad del usuario
-  if (
-    pathname === '/api/auth/me' ||
-    pathname.startsWith('/api/auth/')
-  ) {
-    return authRoutes(req, res, pathname);
-  }
+  // Ruta inexistente
 
-  if (
-    pathname === '/api/pets' ||
-    pathname.startsWith('/api/pets/')
-  ) {
-    return petsRoutes(req, res, pathname);
-  }
-
-  // Ruta no encontrada
-  res.writeHead(404);
-  return res.end(JSON.stringify({
+  return responder(res, 404, {
     success: false,
     error: 'Ruta no encontrada'
-  }));
+  });
 });
+
+// ------------------------------------------------------
+// INICIAR SERVIDOR
+// ------------------------------------------------------
 
 if (require.main === module) {
   server.listen(PORT, () => {
-    console.log(`API PetGo activa en http://localhost:${PORT}`);
+    console.log(
+      `API PetGo activa en http://localhost:${PORT}`
+    );
+
+    console.log(
+      'Base de datos: pendiente de configurar'
+    );
   });
 }
+
+// Permitir ejecutar pruebas automatizadas
 
 module.exports = server;
