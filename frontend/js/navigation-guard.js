@@ -1,16 +1,23 @@
 
-// PetGo 2.0 — Navegación de funciones pendientes
+// ==================================================
+// PETGO 2.0 - NAVEGACIÓN
+// Control de páginas que todavía no existen
+// ==================================================
 
-const paginasPendientes = new Set([
-  '/reservar.html',
-  '/reservas.html',
-  '/perfil.html'
-]);
+// Todas las páginas actuales del frontend ya tienen
+// un archivo HTML correspondiente.
+//
+// Si en el futuro agregamos enlaces a páginas
+// inexistentes, podemos incluirlos aquí.
+
+const paginasPendientes = new Set();
 
 document.addEventListener('click', (evento) => {
   const enlace = evento.target.closest('a[href]');
 
-  if (!enlace) return;
+  if (!enlace) {
+    return;
+  }
 
   const destino = new URL(enlace.href);
 

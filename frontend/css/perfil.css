@@ -1,0 +1,480 @@
+
+/* ============================================
+   PETGO 2.0 — MI PERFIL
+   Estilo naranja, crema y blanco
+   ============================================ */
+
+
+/* 1. ESTILOS GENERALES */
+
+:root {
+  font-family: 'Nunito', sans-serif;
+  color: #292524;
+  background: #fffaf5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.oculto {
+  display: none !important;
+}
+
+
+/* 2. ENCABEZADO */
+
+.encabezado {
+  background: #ffffff;
+  border-bottom: 1px solid #f0e8e2;
+}
+
+.barra {
+  max-width: 1040px;
+  min-height: 76px;
+  margin: 0 auto;
+  padding: 17px 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo {
+  color: #ea580c;
+  font-size: 27px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.volver {
+  color: #78716c;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.volver:hover {
+  color: #ea580c;
+}
+
+
+/* 3. CONTENEDOR PRINCIPAL */
+
+.contenedor {
+  flex: 1;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 60px 24px 90px;
+}
+
+.cabecera {
+  margin-bottom: 32px;
+}
+
+.etiqueta {
+  color: #ea580c;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(36px, 5vw, 49px);
+  font-weight: 400;
+  margin: 12px 0;
+}
+
+.cabecera p {
+  color: #78716c;
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+
+/* 4. TARJETA PRINCIPAL */
+
+.tarjeta-perfil {
+  padding: 36px;
+
+  border: 1px solid #f0e8e2;
+  border-radius: 25px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 12px 30px rgba(112, 66, 42, 0.05);
+}
+
+
+/* 5. IDENTIDAD Y AVATAR */
+
+.identidad {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar {
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+  background: #fff0df;
+
+  font-size: 38px;
+}
+
+.identidad-texto h2 {
+  font-size: 23px;
+  margin: 0 0 6px;
+}
+
+.identidad-texto p {
+  color: #78716c;
+  font-size: 14px;
+  margin: 0;
+}
+
+.separador {
+  height: 1px;
+  background: #f0e8e2;
+  margin: 30px 0;
+}
+
+
+/* 6. DATOS DEL PERFIL */
+
+.datos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 28px;
+  row-gap: 26px;
+}
+
+.dato {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.dato-etiqueta {
+  color: #78716c;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.dato-valor {
+  color: #292524;
+  font-size: 16px;
+  font-weight: 700;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* 7. CAMPOS DE EDICIÓN */
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.campo label {
+  color: #57534e;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.campo input {
+  width: 100%;
+  min-width: 0;
+  min-height: 51px;
+
+  padding: 13px 15px;
+
+  border: 1px solid #e7ded5;
+  border-radius: 12px;
+
+  background: #fffaf5;
+  color: #292524;
+
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.campo input:hover:not(:disabled) {
+  border-color: #fdba74;
+}
+
+.campo input:focus {
+  outline: none;
+  border-color: #ea580c;
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 4px rgba(251, 146, 60, 0.18);
+}
+
+.campo input:disabled {
+  background: #f5f5f4;
+  color: #a8a29e;
+  cursor: not-allowed;
+}
+
+.campo input::placeholder {
+  color: #a8a29e;
+}
+
+.ayuda {
+  color: #a8a29e;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* 8. BOTONES */
+
+.acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  margin-top: 35px;
+}
+
+.boton-principal,
+.boton-secundario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  min-height: 49px;
+  padding: 13px 23px;
+
+  border: 1px solid transparent;
+  border-radius: 12px;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+
+.boton-principal {
+  background: #ea580c;
+  color: #ffffff;
+}
+
+.boton-principal:hover {
+  background: #c2410c;
+  transform: translateY(-1px);
+}
+
+.boton-secundario {
+  background: #ffffff;
+  color: #57534e;
+  border-color: #e7ded5;
+}
+
+.boton-secundario:hover {
+  background: #fff7ed;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #fdba74;
+  outline-offset: 3px;
+}
+
+
+/* 9. MENSAJES */
+
+.nota-edicion {
+  margin: 27px 0 0;
+  padding: 15px 17px;
+
+  color: #854d0e;
+  background: #fff7ed;
+
+  border: 1px solid #ffedd5;
+  border-radius: 12px;
+
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.mensaje {
+  margin: 18px 0 0;
+  min-height: 18px;
+
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.mensaje:empty {
+  display: none;
+}
+
+.mensaje.exito {
+  color: #15803d;
+}
+
+.mensaje.error {
+  color: #b91c1c;
+}
+
+
+/* 10. SEGURIDAD DE LA CUENTA */
+
+.tarjeta-seguridad {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+
+  margin-top: 24px;
+  padding: 25px;
+
+  background: #ffffff;
+
+  border: 1px solid #f0e8e2;
+  border-radius: 20px;
+}
+
+.seguridad-icono {
+  display: grid;
+  place-items: center;
+
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+
+  border-radius: 14px;
+  background: #fff0df;
+
+  font-size: 25px;
+}
+
+.seguridad-texto h2 {
+  font-size: 19px;
+  margin: 0 0 8px;
+}
+
+.seguridad-texto p {
+  color: #78716c;
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+
+/* 11. PIE DE PÁGINA */
+
+footer {
+  padding: 28px 16px;
+
+  color: #a8a29e;
+  text-align: center;
+  font-size: 13px;
+}
+
+
+/* 12. TABLETS Y CELULARES */
+
+@media (max-width: 650px) {
+
+  .barra {
+    padding: 15px 17px;
+  }
+
+  .logo {
+    font-size: 23px;
+  }
+
+  .volver {
+    font-size: 12px;
+  }
+
+  .contenedor {
+    padding: 38px 17px 65px;
+  }
+
+  .tarjeta-perfil {
+    padding: 25px 20px;
+    border-radius: 20px;
+  }
+
+  .avatar {
+    width: 62px;
+    height: 62px;
+    font-size: 30px;
+  }
+
+  .identidad-texto h2 {
+    font-size: 20px;
+  }
+
+  .datos-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .acciones {
+    flex-direction: column;
+  }
+
+  .acciones button {
+    width: 100%;
+  }
+
+  .tarjeta-seguridad {
+    padding: 20px;
+    gap: 13px;
+  }
+
+  .seguridad-icono {
+    width: 44px;
+    height: 44px;
+  }
+
+}

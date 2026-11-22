@@ -1,0 +1,286 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservar un servicio | PetGo 2.0</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/reservar.css">
+  <script src="/js/reservar.js" type="module"></script>
+</head>
+
+<body>
+  <header class="encabezado">
+    <div class="barra">
+      <a href="/panel.html" class="logo">🐾 PetGo</a>
+      <a href="/panel.html" class="volver">
+        ← Volver a mi espacio
+      </a>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <div class="titulo-pagina">
+      <span class="etiqueta">MI ESPACIO PETGO</span>
+      <h1>Reservar un servicio</h1>
+      <p>Organiza el cuidado de tu mascota en tres pasos sencillos.</p>
+    </div>
+
+    <div class="progreso" aria-label="Progreso de reserva">
+      <span id="indicador-1" class="paso-indicador activo">1. Servicio</span>
+      <span id="indicador-2" class="paso-indicador">2. Mascota y fecha</span>
+      <span id="indicador-3" class="paso-indicador">3. Revisar</span>
+    </div>
+
+    <!-- PASO 1: SERVICIO -->
+    <section id="paso-1" class="tarjeta-paso">
+      <span class="numero">PASO 1 DE 3</span>
+      <h2>¿Qué necesita tu mascota?</h2>
+      <p class="descripcion">Elige una categoría de cuidado.</p>
+
+      <div class="opciones-servicio">
+        <button
+          class="opcion-servicio"
+          type="button"
+          data-servicio="paseo"
+          aria-pressed="false"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=350&q=80"
+            alt="Perro al aire libre"
+          >
+          <span class="opcion-texto">
+            <strong>🦮 Paseos</strong>
+            <small>Ejercicio y exploración</small>
+          </span>
+          <span class="flecha" aria-hidden="true">›</span>
+        </button>
+
+        <button
+          class="opcion-servicio"
+          type="button"
+          data-servicio="bano"
+          aria-pressed="false"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=350&q=80"
+            alt="Perro recibiendo cuidados"
+          >
+          <span class="opcion-texto">
+            <strong>🛁 Baño y peluquería</strong>
+            <small>Higiene y bienestar</small>
+          </span>
+          <span class="flecha" aria-hidden="true">›</span>
+        </button>
+      </div>
+
+      <div id="contenedor-modalidad" class="campo-modalidad oculto">
+        <label for="modalidad">¿Qué modalidad prefieres?</label>
+        <select id="modalidad">
+          <option value="">Selecciona una modalidad</option>
+        </select>
+        <p class="ayuda">
+          Las modalidades son de demostración.
+          Todavía no representan disponibilidad real.
+        </p>
+      </div>
+
+      <p id="mensaje-1" class="mensaje" role="alert"></p>
+
+      <div class="acciones">
+        <a href="/panel.html" class="boton-secundario">Cancelar</a>
+        <button id="siguiente-1" type="button" class="boton-principal">
+          Continuar →
+        </button>
+      </div>
+    </section>
+
+    <!-- PASO 2: MASCOTA, FECHA Y HORA -->
+    <section id="paso-2" class="tarjeta-paso oculto">
+      <span class="numero">PASO 2 DE 3</span>
+      <h2>¿Para quién y cuándo?</h2>
+      <p class="descripcion">Indica tu mascota y cuándo prefieres el servicio.</p>
+
+      <div class="campo">
+        <label for="mascota">Nombre de tu mascota *</label>
+        <input
+          id="mascota"
+          type="text"
+          maxlength="100"
+          placeholder="Ej. Max"
+          autocomplete="off"
+          required
+        >
+        <p class="ayuda">
+          Después podrás elegir entre tus mascotas registradas.
+        </p>
+      </div>
+
+      <div class="fila">
+        <!-- CALENDARIO PERSONALIZADO -->
+        <div class="campo">
+          <label id="etiqueta-fecha">Fecha preferida *</label>
+
+          <div class="selector-contenedor" id="selector-fecha">
+            <button
+              id="abrir-fecha"
+              type="button"
+              class="selector-boton"
+              aria-haspopup="dialog"
+              aria-expanded="false"
+              aria-controls="calendario"
+              aria-labelledby="etiqueta-fecha texto-fecha"
+            >
+              <span class="selector-icono" aria-hidden="true">📅</span>
+              <span id="texto-fecha" class="selector-placeholder">
+                Seleccionar fecha
+              </span>
+              <span class="selector-flecha" aria-hidden="true">⌄</span>
+            </button>
+
+            <div
+              id="calendario"
+              class="selector-popup calendario oculto"
+              role="dialog"
+              aria-label="Seleccionar fecha"
+            >
+              <div class="calendario-cabecera">
+                <button
+                  id="mes-anterior"
+                  type="button"
+                  class="mes-boton"
+                  aria-label="Mes anterior"
+                >‹</button>
+
+                <strong id="mes-actual"></strong>
+
+                <button
+                  id="mes-siguiente"
+                  type="button"
+                  class="mes-boton"
+                  aria-label="Mes siguiente"
+                >›</button>
+              </div>
+
+              <div class="calendario-semana" aria-hidden="true">
+                <span>Lu</span><span>Ma</span><span>Mi</span>
+                <span>Ju</span><span>Vi</span><span>Sá</span>
+                <span>Do</span>
+              </div>
+
+              <div id="calendario-dias" class="calendario-dias"></div>
+
+              <button id="elegir-hoy" type="button" class="enlace-hoy">
+                Elegir hoy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SELECTOR PERSONALIZADO DE HORA -->
+        <div class="campo">
+          <label id="etiqueta-hora">Hora preferida *</label>
+
+          <div class="selector-contenedor" id="selector-hora">
+            <button
+              id="abrir-hora"
+              type="button"
+              class="selector-boton"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="lista-horas"
+              aria-labelledby="etiqueta-hora texto-hora"
+            >
+              <span class="selector-icono" aria-hidden="true">🕒</span>
+              <span id="texto-hora" class="selector-placeholder">
+                Seleccionar hora
+              </span>
+              <span class="selector-flecha" aria-hidden="true">⌄</span>
+            </button>
+
+            <div
+              id="lista-horas"
+              class="selector-popup horas-popup oculto"
+              role="listbox"
+              aria-label="Horas disponibles para elegir"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="ayuda">
+        Fecha y hora preferidas. La disponibilidad se
+        verificará cuando conectemos las reservas reales.
+      </p>
+
+      <p id="mensaje-2" class="mensaje" role="alert"></p>
+
+      <div class="acciones">
+        <button id="anterior-2" type="button" class="boton-secundario">
+          ← Atrás
+        </button>
+        <button id="siguiente-2" type="button" class="boton-principal">
+          Revisar solicitud →
+        </button>
+      </div>
+    </section>
+
+    <!-- PASO 3: RESUMEN -->
+    <section id="paso-3" class="tarjeta-paso oculto">
+      <span class="numero">PASO 3 DE 3</span>
+      <h2>Revisa tu solicitud</h2>
+      <p class="descripcion">
+        Comprueba que todos los datos estén correctos.
+      </p>
+
+      <dl class="resumen">
+        <div>
+          <dt>Servicio</dt>
+          <dd id="resumen-servicio">—</dd>
+        </div>
+        <div>
+          <dt>Modalidad</dt>
+          <dd id="resumen-modalidad">—</dd>
+        </div>
+        <div>
+          <dt>Mascota</dt>
+          <dd id="resumen-mascota">—</dd>
+        </div>
+        <div>
+          <dt>Fecha</dt>
+          <dd id="resumen-fecha">—</dd>
+        </div>
+        <div>
+          <dt>Hora</dt>
+          <dd id="resumen-hora">—</dd>
+        </div>
+      </dl>
+
+      <div class="aviso">
+        Esta es una demostración. No se enviará ninguna
+        solicitud ni se realizará un cobro.
+      </div>
+
+      <div class="acciones">
+        <button id="anterior-3" type="button" class="boton-secundario">
+          ← Atrás
+        </button>
+        <button id="finalizar" type="button" class="boton-principal">
+          Finalizar demostración
+        </button>
+      </div>
+
+      <p id="mensaje-final" class="mensaje-exito" role="status"></p>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 PetGo · Cuidamos a tu mejor amigo 🧡
+  </footer>
+</body>
+</html>
