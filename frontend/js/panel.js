@@ -66,12 +66,41 @@ document.addEventListener('keydown', (evento) => {
   }
 });
 
-// Cierre de sesión pendiente de integración
+// Cerrar la sesion a traves de nuestra API, no desde Supabase.
 
-botonCerrarSesion.addEventListener('click', () => {
+botonCerrarSesion.addEventListener('click', async () => {
   cerrarMenus();
+  botonCerrarSesion.disabled = true;
 
-  window.alert(
-    'El cierre de sesión estará disponible cuando conectemos la autenticación.'
-  );
+  try {
+    const respuesta = await fetch('/api/auth/logout', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Accept': 'application/json' }
+    });
+
+    // La API borra cookies incluso si no pudo confirmar
+    // la revocacion remota (503). Informar al usuario.
+    if (respuesta.ok) {
+      window.location.replace('/login.html');
+      return;
+    }
+
+    const datos = await respuesta.json().catch(() => ({}));
+
+    if (respuesta.status === 503) {
+      window.alert(
+        datos.error || 'Se borro la sesion del navegador, pero no se pudo confirmar el cierre remoto.'
+      );
+      window.location.replace('/login.html');
+      return;
+    }
+
+    throw new Error(datos.error || 'No se pudo cerrar la sesion.');
+  } catch (error) {
+    window.alert(
+      error.message || 'No se pudo conectar con la API para cerrar sesion.'
+    );
+    botonCerrarSesion.disabled = false;
+  }
 });
