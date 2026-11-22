@@ -1,0 +1,268 @@
+
+/* ============================================
+   PETGO 2.0 — MIS RESERVAS
+   ============================================ */
+
+:root {
+  font-family: 'Nunito', sans-serif;
+  color: #292524;
+  background: #fffaf5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.oculto {
+  display: none !important;
+}
+
+/* ENCABEZADO */
+
+.encabezado {
+  background: #ffffff;
+  border-bottom: 1px solid #f0e8e2;
+}
+
+.barra {
+  max-width: 1040px;
+  min-height: 76px;
+  margin: auto;
+  padding: 17px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo {
+  color: #ea580c;
+  font-size: 27px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.volver {
+  color: #78716c;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.volver:hover {
+  color: #ea580c;
+}
+
+/* CONTENIDO */
+
+.contenedor {
+  flex: 1;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 60px 24px 90px;
+}
+
+.cabecera {
+  margin-bottom: 34px;
+}
+
+.etiqueta {
+  color: #ea580c;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(36px, 5vw, 49px);
+  font-weight: 400;
+  margin: 12px 0;
+}
+
+.cabecera p {
+  color: #78716c;
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* PANEL */
+
+.panel-reservas {
+  background: #ffffff;
+  border: 1px solid #f0e8e2;
+  border-radius: 25px;
+  padding: 34px;
+  box-shadow: 0 12px 30px rgba(112, 66, 42, 0.05);
+}
+
+.panel-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.panel-encabezado h2 {
+  font-size: 23px;
+  margin: 0;
+}
+
+.panel-icono {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  background: #fff1e5;
+  border-radius: 13px;
+  font-size: 25px;
+}
+
+/* ESTADO VACÍO */
+
+.estado-vacio {
+  padding: 55px 20px 65px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.ilustracion-vacia {
+  display: grid;
+  place-items: center;
+  width: 145px;
+  height: 145px;
+  margin-bottom: 25px;
+  border-radius: 50%;
+  background: #fff1e5;
+  font-size: 70px;
+}
+
+.estado-vacio h3 {
+  font-size: 23px;
+  margin: 0 0 12px;
+}
+
+.estado-vacio p {
+  max-width: 390px;
+  color: #78716c;
+  font-size: 15px;
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* RESERVAS REALES: ESTILOS PREPARADOS */
+
+.lista-reservas {
+  display: grid;
+  gap: 16px;
+  margin-top: 26px;
+}
+
+.reserva {
+  border: 1px solid #f0e8e2;
+  border-radius: 18px;
+  padding: 22px;
+  background: #fffdfa;
+}
+
+.reserva-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.reserva h3 {
+  font-size: 19px;
+  margin: 0;
+}
+
+.reserva p {
+  color: #78716c;
+  line-height: 1.65;
+  margin: 10px 0 0;
+}
+
+.reserva-estado {
+  display: inline-block;
+  border-radius: 30px;
+  background: #ffedd5;
+  color: #9a3412;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* PIE */
+
+footer {
+  padding: 28px 16px;
+  color: #a8a29e;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* CELULARES */
+
+@media (max-width: 650px) {
+  .barra {
+    padding: 15px 17px;
+  }
+
+  .logo {
+    font-size: 23px;
+  }
+
+  .volver {
+    font-size: 12px;
+  }
+
+  .contenedor {
+    padding: 38px 17px 65px;
+  }
+
+  .panel-reservas {
+    padding: 23px 18px;
+    border-radius: 20px;
+  }
+
+  .panel-encabezado h2 {
+    font-size: 20px;
+  }
+
+  .estado-vacio {
+    padding: 45px 8px;
+  }
+
+  .ilustracion-vacia {
+    width: 120px;
+    height: 120px;
+    font-size: 56px;
+  }
+
+  .estado-vacio h3 {
+    font-size: 20px;
+  }
+}

@@ -1,0 +1,350 @@
+
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Mi perfil | PetGo 2.0</title>
+
+  <meta
+    name="description"
+    content="Consulta y administra tus datos personales en PetGo."
+  >
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="/css/perfil.css">
+
+  <!-- JavaScript -->
+  <script src="/js/perfil.js" type="module"></script>
+</head>
+
+<body>
+
+  <!-- ==========================================
+       1. ENCABEZADO
+       ========================================== -->
+
+  <header class="encabezado">
+
+    <div class="barra">
+
+      <a href="/panel.html" class="logo">
+        🐾 PetGo
+      </a>
+
+      <a href="/panel.html" class="volver">
+        ← Volver a mi espacio
+      </a>
+
+    </div>
+
+  </header>
+
+
+  <main class="contenedor">
+
+    <!-- ==========================================
+         2. TÍTULO
+         ========================================== -->
+
+    <section class="cabecera">
+
+      <span class="etiqueta">
+        MI ESPACIO PETGO
+      </span>
+
+      <h1>Mi perfil</h1>
+
+      <p>
+        Consulta y mantén actualizada tu información personal.
+      </p>
+
+    </section>
+
+
+    <!-- ==========================================
+         3. TARJETA PRINCIPAL
+         ========================================== -->
+
+    <section
+      class="tarjeta-perfil"
+      aria-labelledby="titulo-perfil"
+    >
+
+      <!-- Identidad -->
+
+      <div class="identidad">
+
+        <div class="avatar" aria-hidden="true">
+          👤
+        </div>
+
+        <div class="identidad-texto">
+
+          <h2 id="titulo-perfil">
+            Mi cuenta PetGo
+          </h2>
+
+          <p>Perfil de cliente</p>
+
+        </div>
+
+      </div>
+
+      <div class="separador"></div>
+
+
+      <!-- ==========================================
+           4. DATOS EN MODO LECTURA
+           ========================================== -->
+
+      <div id="vista-lectura">
+
+        <div class="datos-grid">
+
+          <div class="dato">
+            <span class="dato-etiqueta">
+              Nombre completo
+            </span>
+
+            <span
+              id="ver-nombre"
+              class="dato-valor"
+            >
+              Sin registrar
+            </span>
+          </div>
+
+          <div class="dato">
+            <span class="dato-etiqueta">
+              Correo electrónico
+            </span>
+
+            <span
+              id="ver-email"
+              class="dato-valor"
+            >
+              Disponible al iniciar sesión
+            </span>
+          </div>
+
+          <div class="dato">
+            <span class="dato-etiqueta">
+              Teléfono
+            </span>
+
+            <span
+              id="ver-telefono"
+              class="dato-valor"
+            >
+              Sin registrar
+            </span>
+          </div>
+
+          <div class="dato">
+            <span class="dato-etiqueta">
+              Ciudad
+            </span>
+
+            <span
+              id="ver-ciudad"
+              class="dato-valor"
+            >
+              Sin registrar
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="acciones">
+
+          <button
+            id="boton-editar"
+            class="boton-principal"
+            type="button"
+          >
+            <span aria-hidden="true">✎</span>
+            Editar mis datos
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- ==========================================
+           5. FORMULARIO DE EDICIÓN
+           ========================================== -->
+
+      <form id="formulario-perfil" class="oculto">
+
+        <div class="datos-grid">
+
+          <div class="campo">
+
+            <label for="nombre">
+              Nombre completo
+            </label>
+
+            <input
+              id="nombre"
+              name="nombre"
+              type="text"
+              placeholder="Tu nombre completo"
+              autocomplete="name"
+              maxlength="100"
+              required
+            >
+
+          </div>
+
+          <div class="campo">
+
+            <label for="email">
+              Correo electrónico
+            </label>
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Disponible al conectar la cuenta"
+              disabled
+            >
+
+            <span class="ayuda">
+              El correo no se modifica desde aquí.
+            </span>
+
+          </div>
+
+          <div class="campo">
+
+            <label for="telefono">
+              Teléfono
+            </label>
+
+            <input
+              id="telefono"
+              name="telefono"
+              type="tel"
+              placeholder="Tu teléfono (opcional)"
+              autocomplete="tel"
+              maxlength="30"
+            >
+
+          </div>
+
+          <div class="campo">
+
+            <label for="ciudad">
+              Ciudad
+            </label>
+
+            <input
+              id="ciudad"
+              name="ciudad"
+              type="text"
+              placeholder="Tu ciudad (opcional)"
+              autocomplete="address-level2"
+              maxlength="100"
+            >
+
+          </div>
+
+        </div>
+
+
+        <p class="nota-edicion">
+          Puedes probar la edición. Por ahora los cambios
+          solamente se mostrarán en esta página y se
+          perderán al recargarla.
+        </p>
+
+        <div class="acciones">
+
+          <button
+            id="boton-cancelar"
+            class="boton-secundario"
+            type="button"
+          >
+            Cancelar
+          </button>
+
+          <button
+            class="boton-principal"
+            type="submit"
+          >
+            Guardar cambios
+          </button>
+
+        </div>
+
+      </form>
+
+      <p
+        id="mensaje-perfil"
+        class="mensaje"
+        role="status"
+        aria-live="polite"
+      ></p>
+
+    </section>
+
+
+    <!-- ==========================================
+         6. SEGURIDAD DE LA CUENTA
+         ========================================== -->
+
+    <section class="tarjeta-seguridad">
+
+      <div class="seguridad-icono" aria-hidden="true">
+        🔒
+      </div>
+
+      <div class="seguridad-texto">
+
+        <h2>Seguridad de tu cuenta</h2>
+
+        <p>
+          La opción para cambiar tu contraseña estará
+          disponible cuando conectemos la autenticación
+          con el nuevo proyecto de Supabase.
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- ==========================================
+       7. PIE DE PÁGINA
+       ========================================== -->
+
+  <footer>
+    © 2026 PetGo · Cuidamos a tu mejor amigo 🧡
+  </footer>
+
+</body>
+</html>
