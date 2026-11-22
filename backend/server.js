@@ -29,6 +29,10 @@ const server = http.createServer(async(req,res)=>{
     try{return await require('./routes/profile.routes').manejarPerfil(req,res);}
     catch(err){console.error('Profile:',err.name||'Error');return responder(res,503,{success:false,error:'Perfil no disponible.'});}
   }
+  if(pathname==='/api/services'){
+    try{return await require('./routes/services.routes').handleServices(req,res);}
+    catch(err){console.error('Services:',err.name||'Error');return responder(res,503,{success:false,error:'Catalogo no disponible.'});}
+  }
   if(pathname==='/api/pets'){
     try{return await require('./routes/pets.routes').handlePets(req,res);}
     catch(err){console.error('Pets:',err.name||'Error');return responder(res,503,{success:false,error:'Mascotas no disponible.'});}

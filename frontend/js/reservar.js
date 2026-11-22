@@ -7,21 +7,63 @@
 
 const $ = (id) => document.getElementById(id);
 
-const opciones = {
-  paseo: [
-    { valor: 'individual', texto: 'Paseo individual' },
-    { valor: 'grupal', texto: 'Paseo grupal' }
-  ],
-  bano: [
-    { valor: 'solo-bano', texto: 'Solo baño' },
-    { valor: 'bano-corte', texto: 'Baño y corte' }
-  ]
-};
+// Las categorías visibles conservan sus tarjetas originales.
+// Las modalidades ya no se obtienen de una lista escrita en JavaScript.
+const opciones = { paseo: [], bano: [] };
+const nombresServicios = { paseo: 'Paseos', bano: 'Baño y peluquería' };
+const serviciosDisponibles = { paseo: null, bano: null };
+let catalogoCargado = false;
 
-const nombresServicios = {
-  paseo: 'Paseos',
-  bano: 'Baño y peluquería'
-};
+function normalizar(texto) {
+  return String(texto || '').normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
+async function cargarCatalogo() {
+  const botones = document.querySelectorAll('.opcion-servicio');
+  botones.forEach(boton => { boton.disabled = true; });
+  $('siguiente-1').disabled = true;
+  $('mensaje-1').textContent = 'Cargando servicios reales...';
+
+  try {
+    const respuesta = await fetch('/api/services', {
+      credentials: 'same-origin', cache: 'no-store'
+    });
+    if (respuesta.status === 401) {
+      window.location.replace('/login.html');
+      return;
+    }
+    const datos = await respuesta.json();
+    if (!respuesta.ok || !datos.success || !Array.isArray(datos.services)) {
+      throw new Error(datos.error || 'No fue posible cargar los servicios.');
+    }
+
+    for (const boton of botones) {
+      const tipo = boton.dataset.servicio;
+      const nombreBuscado = normalizar(nombresServicios[tipo]);
+      const servicio = datos.services.find(item => normalizar(item.nombre) === nombreBuscado);
+      serviciosDisponibles[tipo] = servicio || null;
+      opciones[tipo] = (servicio?.variants || []).map(item => ({
+        valor: item.id, texto: item.nombre
+      }));
+      boton.disabled = opciones[tipo].length === 0;
+    }
+
+    catalogoCargado = true;
+    $('siguiente-1').disabled = false;
+    $('mensaje-1').textContent = botones.length && [...botones].some(b => !b.disabled)
+      ? '' : 'No hay servicios activos disponibles por ahora.';
+
+    // El catálogo ya es real; los horarios y las reservas aún no lo son.
+    const avisoModalidad = document.querySelector('#contenedor-modalidad .ayuda');
+    if (avisoModalidad) avisoModalidad.textContent =
+      'Modalidades reales de PetGo. La disponibilidad todavía no está confirmada.';
+  } catch (error) {
+    $('mensaje-1').textContent = error instanceof TypeError
+      ? 'No pudimos conectar con la API. Revisa que el backend esté encendido.'
+      : error.message;
+  }
+}
 
 const estado = {
   servicio: '',
@@ -147,7 +189,7 @@ botonesServicio.forEach((boton) => {
       new Option('Selecciona una modalidad', '')
     );
 
-    opciones[estado.servicio].forEach((opcion) => {
+    (opciones[estado.servicio] || []).forEach((opcion) => {
       selector.add(
         new Option(opcion.texto, opcion.valor)
       );
@@ -164,7 +206,7 @@ $('modalidad').addEventListener('change', (evento) => {
 });
 
 $('siguiente-1').addEventListener('click', () => {
-  if (!estado.servicio || !estado.modalidad) {
+  if (!catalogoCargado || !estado.servicio || !estado.modalidad || !opciones[estado.servicio]?.some(o => o.valor === estado.modalidad)) {
     $('mensaje-1').textContent =
       'Selecciona un servicio y una modalidad.';
     return;
@@ -458,7 +500,7 @@ $('siguiente-2').addEventListener('click', () => {
   $('resumen-servicio').textContent =
     nombresServicios[estado.servicio];
 
-  const opcionElegida = opciones[estado.servicio].find(
+  const opcionElegida = (opciones[estado.servicio] || []).find(
     (opcion) => opcion.valor === estado.modalidad
   );
 
@@ -485,3 +527,6 @@ $('finalizar').addEventListener('click', () => {
   $('mensaje-final').textContent =
     'Demostración completada. No se ha creado una reserva real.';
 });
+
+// Leer los servicios de Supabase exclusivamente mediante nuestra API.
+cargarCatalogo();

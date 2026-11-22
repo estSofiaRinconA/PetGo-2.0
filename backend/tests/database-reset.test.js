@@ -15,7 +15,7 @@ test('La API propia sigue activa',async()=>{
 });
 test('Las rutas restantes siguen pendientes',async()=>{
   const url=await iniciarServidor();
-  for(const path of ['/api/services','/api/reservations','/api/notifications']){
+  for(const path of ['/api/reservations','/api/notifications']){
     assert.equal((await fetch(url+path)).status,503);
   }
 });
@@ -52,4 +52,10 @@ test('Modificar perfil desde otro origen se rechaza',async()=>{
 });
 test('Mascotas exige sesion',async()=>{
   const url=await iniciarServidor();assert.equal((await fetch(url+'/api/pets')).status,401);
+});
+
+test('El catalogo requiere sesion',async()=>{
+  const url=await iniciarServidor();
+  const r=await fetch(url+'/api/services');
+  assert.equal(r.status,401);
 });
