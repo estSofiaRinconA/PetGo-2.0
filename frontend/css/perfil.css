@@ -478,3 +478,21 @@ footer {
   }
 
 }
+
+/* Seguridad de cuenta: acordeones accesibles y adaptables */
+.seguridad-texto { flex: 1; min-width: 0; }
+.seguridad-paneles { display: grid; gap: 14px; margin-top: 18px; }
+.seguridad-panel { border: 1px solid #f0e8e2; border-radius: 14px; overflow: hidden; }
+.seguridad-panel summary { padding: 16px; font-weight: 800; cursor: pointer; color: #9a3412; }
+.seguridad-panel summary:hover { background: #fff7ed; }
+.seguridad-panel summary:focus-visible { outline: 3px solid #ea580c; outline-offset: -3px; }
+.seguridad-formulario { padding: 4px 16px 20px; display: grid; gap: 16px; }
+.seguridad-formulario p { margin: 0; }
+.seguridad-formulario .campo input { display: block; }
+.seguridad-formulario .boton-principal { justify-self: start; }
+.seguridad-formulario .mensaje { margin-top: 0; }
+@media (max-width: 650px) {
+  .tarjeta-seguridad { flex-direction: column; }
+  .seguridad-texto { width: 100%; }
+  .seguridad-formulario .boton-principal { width: 100%; }
+}

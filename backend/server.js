@@ -9,7 +9,8 @@ const rutas = new Map([
   ['/api/auth/register',['POST']], ['/api/auth/login',['POST']],
   ['/api/auth/me',['GET']], ['/api/auth/logout',['POST']],
   ['/api/auth/password/recovery',['POST']], ['/api/auth/password/verify',['POST']], ['/api/auth/password/reset',['POST']],
-  ['/api/profile',['GET','PATCH']], ['/api/pets',['GET','POST']], ['/api/pets/item',['PATCH','DELETE']],
+  ['/api/profile',['GET','PATCH']],
+  ['/api/profile/security/email',['PATCH']], ['/api/profile/security/password',['PATCH']], ['/api/pets',['GET','POST']], ['/api/pets/item',['PATCH','DELETE']],
   ['/api/services',['GET']], ['/api/reservations',['GET','POST']], ['/api/reservations/cancel',['PATCH']],
   ['/api/notifications',['GET']], ['/api/notifications/read',['PATCH']],
   ['/api/admin/me',['GET']], ['/api/admin/bookings',['GET']], ['/api/admin/bookings/status',['PATCH']], ['/api/admin/schedule',['GET','PATCH']]
@@ -31,8 +32,8 @@ const server = http.createServer(async(req,res)=>{
     try{return await require('./routes/auth.routes').manejarAuth(req,res,pathname);}
     catch(err){console.error('Auth:',err.name||'Error');return responder(res,503,{success:false,error:'Autenticacion no disponible.'});}
   }
-  if(pathname==='/api/profile'){
-    try{return await require('./routes/profile.routes').manejarPerfil(req,res);}
+  if(pathname==='/api/profile' || pathname.startsWith('/api/profile/security/')){
+    try{return await require('./routes/profile.routes').manejarPerfil(req,res,pathname);}
     catch(err){console.error('Profile:',err.name||'Error');return responder(res,503,{success:false,error:'Perfil no disponible.'});}
   }
   if(pathname==='/api/services'){
