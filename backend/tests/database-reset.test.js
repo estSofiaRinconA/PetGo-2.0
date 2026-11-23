@@ -1,41 +1,59 @@
-﻿const { test, before, after } = require('node:test');
+// PETGO 2.0 - PRUEBAS DE RUTAS
+const test = require('node:test');
 const assert = require('node:assert/strict');
 const server = require('../server');
-
-let baseUrl;
-before(async () => {
-  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-  baseUrl = `http://127.0.0.1:${server.address().port}`;
+async function iniciarServidor() {
+  if(!server.listening) await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  return `http://127.0.0.1:${server.address().port}`;
+}
+test.after(async()=>{
+  if(server.listening) await new Promise((resolve,reject)=>server.close(error=>error?reject(error):resolve()));
 });
-after(async () => {
-  if (server.listening) {
-    await new Promise(resolve => server.close(resolve));
-  }
+test('La API propia sigue activa',async()=>{
+  const url=await iniciarServidor();const r=await fetch(url+'/');
+  assert.equal(r.status,200);assert.equal((await r.json()).success,true);
+});
+test('Notificaciones sin sesion requieren autenticacion',async()=>{
+  const url=await iniciarServidor();
+  assert.equal((await fetch(url+'/api/notifications')).status,401);
+});
+test('Una ruta desconocida devuelve 404',async()=>{
+  const url=await iniciarServidor();assert.equal((await fetch(url+'/api/ruta-inexistente')).status,404);
+});
+test('Registro rechaza un metodo incorrecto',async()=>{
+  const url=await iniciarServidor();assert.equal((await fetch(url+'/api/auth/register')).status,405);
+});
+test('Login rechaza un metodo incorrecto',async()=>{
+  const url=await iniciarServidor();assert.equal((await fetch(url+'/api/auth/login')).status,405);
+});
+test('Consultar usuario sin sesion devuelve 401',async()=>{
+  const url=await iniciarServidor();assert.equal((await fetch(url+'/api/auth/me')).status,401);
+});
+test('Registro rechaza datos incompletos',async()=>{
+  const url=await iniciarServidor();const r=await fetch(url+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:'',email:'incorrecto',password:'123'})});
+  assert.equal(r.status,400);
+});
+test('Registro rechaza JSON invalido',async()=>{
+  const url=await iniciarServidor();const r=await fetch(url+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:'{json-invalido'});
+  assert.equal(r.status,400);
+});
+test('Consultar perfil sin sesion devuelve 401',async()=>{
+  const url=await iniciarServidor();assert.equal((await fetch(url+'/api/profile')).status,401);
+});
+test('Modificar perfil sin sesion se rechaza',async()=>{
+  const url=await iniciarServidor();const r=await fetch(url+'/api/profile',{method:'PATCH',headers:{'Content-Type':'application/json',Origin:url},body:JSON.stringify({nombre:'Prueba',telefono:'',ciudad:''})});
+  assert.equal(r.status,401);
+});
+test('Modificar perfil desde otro origen se rechaza',async()=>{
+  const url=await iniciarServidor();const r=await fetch(url+'/api/profile',{method:'PATCH',headers:{'Content-Type':'application/json',Origin:'https://sitio-no-autorizado.example'},body:JSON.stringify({nombre:'Prueba',telefono:'',ciudad:''})});
+  assert.equal(r.status,403);
+});
+test('Mascotas exige sesion',async()=>{
+  const url=await iniciarServidor();assert.equal((await fetch(url+'/api/pets')).status,401);
 });
 
-test('La API sigue activa sin una base de datos', async () => {
-  const response = await fetch(baseUrl + '/');
-  const body = await response.json();
-  assert.equal(response.status, 200);
-  assert.equal(body.message, 'API PetGo 2.0 activa');
-  assert.equal(body.database, 'sin configurar');
-});
-
-test('Autenticacion pendiente no intenta usar una base de datos vieja', async () => {
-  const response = await fetch(baseUrl + '/api/auth/login', { method: 'POST' });
-  const body = await response.json();
-  assert.equal(response.status, 503);
-  assert.equal(body.success, false);
-});
-
-test('Mascotas y servicios quedan como rutas reservadas', async () => {
-  for (const ruta of ['/api/pets', '/api/services', '/api/reservations']) {
-    const response = await fetch(baseUrl + ruta);
-    assert.equal(response.status, 503);
-  }
-});
-
-test('Una ruta inexistente responde 404', async () => {
-  const response = await fetch(baseUrl + '/no-existe');
-  assert.equal(response.status, 404);
+test('El catalogo requiere sesion',async()=>{
+  const url=await iniciarServidor();
+  const r=await fetch(url+'/api/services');
+  assert.equal(r.status,401);
 });

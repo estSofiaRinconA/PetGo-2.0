@@ -1,45 +1,38 @@
 # Estado de PetGo 2.0
 
-**Actualizado:** 20 de noviembre de 2026. **Trabajo local en desarrollo.**
+**Corte:** 23 de noviembre de 2026.
 
-## Comprobado durante la conversación
+## Entrega web
 
-- Frontend construido con **HTML5, CSS y JavaScript** sobre Vite; portada naranja/crema, introducción a Paseos y Baño y peluquería.
-- Páginas creadas: `index.html`, `login.html`, `registro.html`, `panel.html`, `mascotas.html`.
-- Panel simplificado: una acción principal para nuevas reservas; accesos a mascotas y reservas; menús de notificaciones y perfil.
-- Se ejecutó `npm test` en `backend/` con **23 pruebas aprobadas, 0 fallidas**. Son pruebas anteriores: **no prueban la nueva API de mascotas ni la autenticación en producción**.
-- Código de `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me` y ruta propuesta `GET/POST /api/pets`; la última fue integrada según los pasos dados, pero **no se obtuvo aún una respuesta HTTP comprobada**.
-- Al probar `GET /api/pets` inicialmente hubo error de conexión porque el backend no estaba activo. Se indicó arrancar con `npm start`; no consta una respuesta 401 confirmada en el registro compartido.
-- Migraciones `001`–`009` aplicadas anteriormente; `010_user_access_policies.sql` y `011_create_profiles_trigger.sql` creadas, **no consta su ejecución**.
-- Supabase `petgo_v2.profiles`: RLS habilitado y `FORCE ROW LEVEL SECURITY`, propietario `postgres` (consulta SQL compartida).
+- Render ejecuta el frontend compilado y la API Node.js bajo HTTPS; el usuario confirmó estado **Live** y carga de la portada.
+- Fueron comprobados manualmente: login, registro como página, redirección de administrador, lista administrativa de reservas, cierre de sesión, acceso a mascotas, reservas y perfil.
+- La actualización de cookies y accesibilidad pasó seis verificaciones manuales: botón accesible, alto contraste, cambio de tamaño del texto, lectura en voz alta, aviso de cookies e inicio de sesión/panel tras actualizar el despliegue.
+- El código de Supabase y las migraciones `001`–`015` están presentes. Las comprobaciones anteriores sobre funciones de reservas, mascotas, notificaciones y agenda se realizaron en desarrollo; el informe de publicación no implica una auditoría completa de cada operación.
 
-## Funcionalidad visual vs real
+## Componentes implementados
 
-| Área | Estado actual |
+| Componente | Estado |
 |---|---|
-| Portada pública informativa | Interfaz creada; enlaces a login/registro |
-| Login / registro | Formularios y llamadas API preparadas; sin prueba real de alta/sesión |
-| Panel | Vista previa visual sin acceso autenticado consolidado |
-| Mis mascotas | Formulario visual; no almacena datos aún |
-| Catálogo detallado | Pendiente de acceso privado y protección backend |
-| Reservas / perfil / notificaciones reales | Pendientes |
-| Despliegue público | No confirmado |
+| Portada y páginas HTML | Desplegadas |
+| Registro e inicio de sesión | Implementados; login probado en Render |
+| Perfil y mascotas | Implementados; páginas verificadas |
+| Servicios, reservas y cancelaciones | Implementados; requieren pruebas regresivas en entorno público |
+| Notificaciones | Implementadas |
+| Panel de administración y agenda | Implementados; acceso y reservas comprobados en Render |
+| Recuperación OTP | Implementada con código, verificación y nueva contraseña; flujo extremo a extremo pendiente de confirmar |
+| Cookies y accesibilidad | Implementadas y comprobadas manualmente |
+| HTTPS y servicio Node.js | Desplegados en Render |
+| Google OAuth | No implementado en la versión entregada |
 
-## Decisiones de producto
+## Pendientes conocidos
 
-- Sin módulos de profesionales, proveedores o empresas.
-- Sin iniciar sesión: mostrar solo explicación pública de servicios, **no catálogo detallado ni precios**.
-- Con sesión válida: mostrar catálogo y operaciones privadas solo cuando el backend controle permisos.
-- Una acción principal de reserva; no repetir enlaces con idéntica función en el panel.
-- No mostrar reservas ni alertas ficticias como datos reales.
+1. Confirmar que la sesión se conserva al actualizar con `F5` y al abrir una pestaña nueva. Esta prueba quedó pendiente en la revisión anterior.
+2. Verificar mediante solicitudes reales que clientes no acceden a rutas administrativas y que administradores no obtienen permisos indebidos de cliente.
+3. Revisar disponibilidad por solapamiento de horarios y capacidad real, no solo coincidencias exactas.
+4. Ejecutar el flujo completo de recuperación OTP desde correo hasta acceso con la nueva contraseña.
+5. Completar auditoría de accesibilidad, seguridad de cookies, CSRF, pruebas automatizadas e integración.
+6. Registrar la URL pública real de Render en `README.md` y `docs/DESPLIEGUE_RENDER.md`.
 
-## Próximos pasos, en orden
+## Criterio de presentación
 
-1. Revisar navegación local con `docs/NAVEGACION.md`; evitar enlaces rotos.
-2. Añadir pruebas automáticas de `/api/pets` y confirmar respuesta 401 sin token.
-3. Revisar/aplicar con seguridad migraciones 010 y 011 y creación de perfiles; no ejecutarlas a ciegas (RLS forzado y trigger previo del esquema antiguo).
-4. Completar sesión segura (evitar almacenar credenciales privilegiadas en navegador), cierre de sesión, rutas privadas y autorización por propietario.
-5. Conectar mascotas; después catálogo privado, reservas, perfil, notificaciones.
-6. Revisar `git status`, excluir secretos, ejecutar pruebas, crear commit y PR.
-
-**No se considera lista para producción.**
+Se puede demostrar la versión publicada con cuentas de prueba. No se afirma que la plataforma esté auditada para usuarios reales ni que funciones pendientes estén terminadas.

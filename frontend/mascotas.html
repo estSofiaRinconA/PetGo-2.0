@@ -2,6 +2,10 @@
 <!doctype html>
 <html lang="es">
 <head>
+  <!-- Mantener oculta la vista privada hasta validar la sesion. -->
+  <style id="petgo-private-style">html { visibility: hidden; }</style>
+  <script src="/js/private-page.js" type="module"></script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -55,7 +59,11 @@
 
       <h2 id="titulo-lista">Tus mascotas</h2>
 
-      <div id="estado-mascotas" class="estado-vacio">
+      <p id="aviso-lista" class="mensaje" role="status" aria-live="polite">Cargando tus mascotas...</p>
+
+      <div id="lista-mascotas" class="lista-mascotas oculto" aria-live="polite"></div>
+
+      <div id="estado-mascotas" class="estado-vacio oculto">
         <div class="imagen-vacia" aria-hidden="true">🐶</div>
         <h3>¡Aquí aparecerán tus mascotas!</h3>
         <p>
@@ -70,7 +78,7 @@
     <section id="formulario-seccion" class="formulario-seccion oculto">
 
       <div class="formulario-cabecera">
-        <h2>Agregar mascota</h2>
+        <h2 id="titulo-formulario">Agregar mascota</h2>
 
         <button
           id="cerrar-formulario"
@@ -122,6 +130,11 @@
             >
           </div>
 
+        </div>
+
+        <div class="campo">
+          <label for="fecha_nacimiento">Fecha de nacimiento (opcional)</label>
+          <input id="fecha_nacimiento" name="fecha_nacimiento" type="date">
         </div>
 
         <div class="campo">

@@ -173,3 +173,13 @@ footer {
     font-size: 29px;
   }
 }
+
+/* La página OTP alterna formularios sin mostrar el paso oculto. */
+[hidden] { display: none !important; }
+
+/* Recuperación paso a paso */
+.pasos-recuperacion { text-align: center; color: #9a3412; font-weight: 800; margin: 0 0 20px; }
+.boton-secundario { margin-top: 12px; background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+.boton-secundario:hover { background: #ffedd5; }
+.ayuda-otp { margin: 0 0 18px; color: #166534; font-weight: 700; line-height: 1.5; }
+:focus-visible { outline: 3px solid #ea580c; outline-offset: 3px; }

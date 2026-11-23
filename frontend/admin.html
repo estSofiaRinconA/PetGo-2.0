@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administración | PetGo 2.0</title>
+  <style id="petgo-private-style">html{visibility:hidden}</style>
+  <script type="module" src="/js/private-page.js?v=20261123b"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css?v=20261123b">
+  <script type="module" src="/js/admin.js?v=20261123b"></script>
+<style>
+  .petgo-admin-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .petgo-admin-logout{border:1px solid #c2410c;border-radius:10px;background:#fff7ed;color:#9a3412;padding:9px 14px;font:700 0.95rem Nunito,system-ui,sans-serif;cursor:pointer}
+  .petgo-admin-logout:hover{background:#ffedd5}
+  .petgo-admin-logout:focus-visible{outline:3px solid #2563eb;outline-offset:3px}
+  .petgo-admin-logout:disabled{opacity:.6;cursor:wait}
+</style>
+<script type="module" src="/js/admin-logout.js?v=20261123c"></script>
+</head>
+<body>
+  <header class="top"><a class="brand" href="/admin.html">🐾 PetGo</a><span>Administración de solicitudes</span><nav class="petgo-admin-actions" aria-label="Opciones de administrador"><a href="/admin-agenda.html">Configurar agenda</a><button type="button" id="admin-logout" class="petgo-admin-logout">Cerrar sesión</button></nav></header>
+  <main class="wrap">
+    <div class="intro"><div><span class="eyebrow">ACCESO RESTRINGIDO</span><h1>Solicitudes de servicio</h1><p>Confirma solicitudes pendientes y registra servicios completados. Una solicitud pendiente todavía no implica disponibilidad confirmada.</p></div><button type="button" id="refresh">Actualizar lista</button></div>
+    <div id="message" role="status" aria-live="polite" class="message">Comprobando permisos...</div>
+    <section id="admin-content" hidden aria-label="Solicitudes"><div class="tabs" role="tablist" aria-label="Estados de las reservas">
+      <button id="tab-active" class="tab is-selected" type="button" role="tab" aria-selected="true" aria-controls="bookings" tabindex="0">Activas <span id="count-active" aria-hidden="true"></span></button>
+      <button id="tab-history" class="tab" type="button" role="tab" aria-selected="false" aria-controls="bookings" tabindex="-1">Historial <span id="count-history" aria-hidden="true"></span></button>
+    </div>
+    <p id="tab-description" class="tab-description">Solicitudes pendientes y confirmadas.</p>
+    <div id="bookings" class="cards" role="tabpanel" aria-labelledby="tab-active" tabindex="0"></div></section>
+  </main>
+</body>
+</html>

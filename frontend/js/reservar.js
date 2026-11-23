@@ -2,30 +2,73 @@
 // ===================================================
 // PETGO 2.0 - RESERVAS
 // Selectores de fecha y hora personalizados
-// Demostración visual: no guarda reservas reales
+// Solicitudes reales con estado pendiente; sin disponibilidad confirmada
 // ===================================================
 
 const $ = (id) => document.getElementById(id);
 
-const opciones = {
-  paseo: [
-    { valor: 'individual', texto: 'Paseo individual' },
-    { valor: 'grupal', texto: 'Paseo grupal' }
-  ],
-  bano: [
-    { valor: 'solo-bano', texto: 'Solo baño' },
-    { valor: 'bano-corte', texto: 'Baño y corte' }
-  ]
-};
+// Las categorías visibles conservan sus tarjetas originales.
+// Las modalidades ya no se obtienen de una lista escrita en JavaScript.
+const opciones = { paseo: [], bano: [] };
+const nombresServicios = { paseo: 'Paseos', bano: 'Baño y peluquería' };
+const serviciosDisponibles = { paseo: null, bano: null };
+let catalogoCargado = false;
 
-const nombresServicios = {
-  paseo: 'Paseos',
-  bano: 'Baño y peluquería'
-};
+function normalizar(texto) {
+  return String(texto || '').normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
+async function cargarCatalogo() {
+  const botones = document.querySelectorAll('.opcion-servicio');
+  botones.forEach(boton => { boton.disabled = true; });
+  $('siguiente-1').disabled = true;
+  $('mensaje-1').textContent = 'Cargando servicios reales...';
+
+  try {
+    const respuesta = await fetch('/api/services', {
+      credentials: 'same-origin', cache: 'no-store'
+    });
+    if (respuesta.status === 401) {
+      window.location.replace('/login.html');
+      return;
+    }
+    const datos = await respuesta.json();
+    if (!respuesta.ok || !datos.success || !Array.isArray(datos.services)) {
+      throw new Error(datos.error || 'No fue posible cargar los servicios.');
+    }
+
+    for (const boton of botones) {
+      const tipo = boton.dataset.servicio;
+      const nombreBuscado = normalizar(nombresServicios[tipo]);
+      const servicio = datos.services.find(item => normalizar(item.nombre) === nombreBuscado);
+      serviciosDisponibles[tipo] = servicio || null;
+      opciones[tipo] = (servicio?.variants || []).map(item => ({
+        valor: item.id, texto: item.nombre
+      }));
+      boton.disabled = opciones[tipo].length === 0;
+    }
+
+    catalogoCargado = true;
+    $('siguiente-1').disabled = false;
+    $('mensaje-1').textContent = botones.length && [...botones].some(b => !b.disabled)
+      ? '' : 'No hay servicios activos disponibles por ahora.';
+
+    // El catálogo ya es real; los horarios y las reservas aún no lo son.
+    const avisoModalidad = document.querySelector('#contenedor-modalidad .ayuda');
+    if (avisoModalidad) avisoModalidad.textContent =
+      'Modalidades reales de PetGo. Los horarios elegidos serán preferencias, no disponibilidad confirmada.';
+  } catch (error) {
+    $('mensaje-1').textContent = error instanceof TypeError
+      ? 'No pudimos conectar con la API. Revisa que el backend esté encendido.'
+      : error.message;
+  }
+}
 
 const estado = {
   servicio: '',
   modalidad: '',
+  mascota: '',
   fecha: '',
   hora: ''
 };
@@ -147,7 +190,7 @@ botonesServicio.forEach((boton) => {
       new Option('Selecciona una modalidad', '')
     );
 
-    opciones[estado.servicio].forEach((opcion) => {
+    (opciones[estado.servicio] || []).forEach((opcion) => {
       selector.add(
         new Option(opcion.texto, opcion.valor)
       );
@@ -164,12 +207,13 @@ $('modalidad').addEventListener('change', (evento) => {
 });
 
 $('siguiente-1').addEventListener('click', () => {
-  if (!estado.servicio || !estado.modalidad) {
+  if (!catalogoCargado || !estado.servicio || !estado.modalidad || !opciones[estado.servicio]?.some(o => o.valor === estado.modalidad)) {
     $('mensaje-1').textContent =
       'Selecciona un servicio y una modalidad.';
     return;
   }
 
+  cargarMascotas();
   mostrarPaso(2);
 });
 
@@ -389,8 +433,7 @@ function dibujarHoras() {
   const contenedor = $('lista-horas');
   contenedor.replaceChildren();
 
-  // Intervalos de 30 minutos para la demostración.
-  // No representan horarios reales de PetGo.
+  // Horas preferidas cada 30 minutos; NO equivalen a disponibilidad real.
   for (let hora = 0; hora < 24; hora++) {
     for (const minuto of [0, 30]) {
       const valor =
@@ -433,19 +476,17 @@ function dibujarHoras() {
 // ---------------------------------------------------
 
 $('siguiente-2').addEventListener('click', () => {
-  const mascota = $('mascota').value.trim();
+  const mascota = $('mascota').value;
+  const opcionMascota = [...$('mascota').options].find(opcion =>
+    opcion.value === mascota && opcion.value !== ''
+  );
 
-  if (!mascota || !estado.fecha || !estado.hora) {
+  if (!opcionMascota || !estado.fecha || !estado.hora) {
     $('mensaje-2').textContent =
-      'Completa el nombre, la fecha y la hora.';
+      'Selecciona una mascota registrada, fecha y hora.';
     return;
   }
-
-  if (mascota.length > 100) {
-    $('mensaje-2').textContent =
-      'El nombre de la mascota es demasiado largo.';
-    return;
-  }
+  estado.mascota = mascota;
 
   if (!fechaYHoraFuturas()) {
     $('mensaje-2').textContent =
@@ -458,14 +499,14 @@ $('siguiente-2').addEventListener('click', () => {
   $('resumen-servicio').textContent =
     nombresServicios[estado.servicio];
 
-  const opcionElegida = opciones[estado.servicio].find(
+  const opcionElegida = (opciones[estado.servicio] || []).find(
     (opcion) => opcion.valor === estado.modalidad
   );
 
   $('resumen-modalidad').textContent =
     opcionElegida?.texto || '—';
 
-  $('resumen-mascota').textContent = mascota;
+  $('resumen-mascota').textContent = opcionMascota.textContent;
   $('resumen-fecha').textContent =
     fechaBonita(estado.fecha);
 
@@ -481,7 +522,93 @@ $('anterior-3').addEventListener('click', () => {
   mostrarPaso(2);
 });
 
-$('finalizar').addEventListener('click', () => {
-  $('mensaje-final').textContent =
-    'Demostración completada. No se ha creado una reserva real.';
+let mascotasCargadas = false;
+let enviando = false;
+
+async function cargarMascotas() {
+  if (mascotasCargadas) return;
+  const selector = $('mascota');
+  selector.disabled = true;
+  selector.replaceChildren(new Option('Cargando tus mascotas...', ''));
+  try {
+    const response = await fetch('/api/pets', { credentials: 'same-origin', cache: 'no-store' });
+    if (response.status === 401) {
+      window.location.replace('/login.html');
+      return;
+    }
+    const data = await response.json();
+    if (!response.ok || !data.success || !Array.isArray(data.pets)) {
+      throw new Error(data.error || 'No se pudieron consultar tus mascotas.');
+    }
+    selector.replaceChildren(new Option('Selecciona una mascota', ''));
+    for (const pet of data.pets) {
+      selector.add(new Option(`${pet.nombre} (${pet.especie})`, pet.id));
+    }
+    mascotasCargadas = true;
+    selector.disabled = data.pets.length === 0;
+    $('mensaje-2').textContent = data.pets.length
+      ? ''
+      : 'Primero registra una mascota desde Mis mascotas.';
+  } catch (error) {
+    $('mensaje-2').textContent = error instanceof TypeError
+      ? 'No hay conexión con la API de PetGo.' : error.message;
+  }
+}
+
+$('finalizar').addEventListener('click', async () => {
+  if (enviando) return;
+  if (!fechaYHoraFuturas() || !estado.mascota || !estado.modalidad) {
+    $('mensaje-final').textContent = 'Verifica los datos antes de enviar.';
+    return;
+  }
+  const [year, month, day] = estado.fecha.split('-').map(Number);
+  const [hour, minute] = estado.hora.split(':').map(Number);
+  const requestedDate = new Date(year, month - 1, day, hour, minute);
+  if (requestedDate.getFullYear() !== year || requestedDate.getMonth() !== month - 1 ||
+      requestedDate.getDate() !== day || requestedDate.getHours() !== hour ||
+      requestedDate.getMinutes() !== minute) {
+    $('mensaje-final').textContent = 'La fecha u hora seleccionada no es válida.';
+    return;
+  }
+  const button = $('finalizar');
+  enviando = true;
+  button.disabled = true;
+  button.textContent = 'Enviando solicitud...';
+  $('mensaje-final').textContent = '';
+  try {
+    const response = await fetch('/api/reservations', {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        pet_id: estado.mascota,
+        service_variant_id: estado.modalidad,
+        scheduled_at: requestedDate.toISOString()
+      })
+    });
+    if (response.status === 401) {
+      window.location.replace('/login.html');
+      return;
+    }
+    const data = await response.json();
+    if (!response.ok || !data.success) throw new Error(data.error || 'No se pudo guardar la solicitud.');
+    $('mensaje-final').textContent = '¡Solicitud registrada! Está pendiente de confirmación. Consulta su estado en Mis reservas.';
+    // La solicitud ya se guardó: el usuario no debe volver a enviarla
+    // ni regresar a los pasos anteriores desde esta pantalla.
+    button.closest('.acciones').classList.add('oculto');
+    const link = document.createElement('a');
+    link.href = '/reservas.html';
+    link.textContent = 'Ver mis reservas →';
+    link.className = 'boton-secundario';
+    link.style.marginTop = '12px';
+    $('mensaje-final').insertAdjacentElement('afterend', link);
+  } catch (error) {
+    $('mensaje-final').textContent = error instanceof TypeError
+      ? 'No hay conexión con la API de PetGo.' : error.message;
+    button.disabled = false;
+    button.textContent = 'Enviar solicitud de reserva';
+    enviando = false;
+  }
 });
+
+// Catálogo y mascotas se cargan exclusivamente desde nuestra API.
+cargarCatalogo();

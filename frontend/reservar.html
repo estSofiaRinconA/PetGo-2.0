@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/css/reservar.css">
+  <script src="/js/private-page.js" type="module"></script>
   <script src="/js/reservar.js" type="module"></script>
 </head>
 
@@ -85,8 +86,7 @@
           <option value="">Selecciona una modalidad</option>
         </select>
         <p class="ayuda">
-          Las modalidades son de demostración.
-          Todavía no representan disponibilidad real.
+          Modalidades reales. Fecha y hora son preferencias, sujetas a confirmación.
         </p>
       </div>
 
@@ -107,17 +107,13 @@
       <p class="descripcion">Indica tu mascota y cuándo prefieres el servicio.</p>
 
       <div class="campo">
-        <label for="mascota">Nombre de tu mascota *</label>
-        <input
-          id="mascota"
-          type="text"
-          maxlength="100"
-          placeholder="Ej. Max"
-          autocomplete="off"
-          required
-        >
+        <label for="mascota">Selecciona una de tus mascotas *</label>
+        <select id="mascota" required disabled>
+          <option value="">Cargando tus mascotas...</option>
+        </select>
         <p class="ayuda">
-          Después podrás elegir entre tus mascotas registradas.
+          Solo puedes solicitar servicios para tus mascotas registradas.
+          <a href="/mascotas.html">Registrar otra mascota</a>
         </p>
       </div>
 
@@ -207,15 +203,15 @@
               id="lista-horas"
               class="selector-popup horas-popup oculto"
               role="listbox"
-              aria-label="Horas disponibles para elegir"
+              aria-label="Horas preferidas para solicitar"
             ></div>
           </div>
         </div>
       </div>
 
       <p class="ayuda">
-        Fecha y hora preferidas. La disponibilidad se
-        verificará cuando conectemos las reservas reales.
+        La fecha y hora elegidas son una preferencia. No representan
+        disponibilidad confirmada. La solicitud quedará pendiente de revisión.
       </p>
 
       <p id="mensaje-2" class="mensaje" role="alert"></p>
@@ -262,8 +258,8 @@
       </dl>
 
       <div class="aviso">
-        Esta es una demostración. No se enviará ninguna
-        solicitud ni se realizará un cobro.
+        Al enviar, registrarás una solicitud real con estado
+        «pendiente». La fecha y hora no están confirmadas y no se realizará ningún cobro.
       </div>
 
       <div class="acciones">
@@ -271,7 +267,7 @@
           ← Atrás
         </button>
         <button id="finalizar" type="button" class="boton-principal">
-          Finalizar demostración
+          Enviar solicitud de reserva
         </button>
       </div>
 

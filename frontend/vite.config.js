@@ -21,11 +21,14 @@ export default defineConfig({
         inicio: resolve(raiz, 'index.html'),
         login: resolve(raiz, 'login.html'),
         registro: resolve(raiz, 'registro.html'),
+        recuperar: resolve(raiz, 'recuperar.html'),
         panel: resolve(raiz, 'panel.html'),
         mascotas: resolve(raiz, 'mascotas.html'),
         reservar: resolve(raiz, 'reservar.html'),
         reservas: resolve(raiz, 'reservas.html'),
-        perfil: resolve(raiz, 'perfil.html')
+        perfil: resolve(raiz, 'perfil.html'),
+        admin: resolve(raiz, 'admin.html'),
+        agenda: resolve(raiz, 'admin-agenda.html')
       }
     }
   }

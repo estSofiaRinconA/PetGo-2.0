@@ -266,3 +266,62 @@ footer {
     font-size: 20px;
   }
 }
+
+/* Paso 86 — Cancelacion de solicitudes pendientes */
+.reserva-acciones { margin-top: 18px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.boton-cancelar-reserva { cursor: pointer; border: 1px solid #c2410c; background: #fff7ed; color: #9a3412; padding: 11px 16px; border-radius: 12px; font: inherit; font-weight: 800; }
+.boton-cancelar-reserva:hover { background: #ffedd5; }
+.boton-cancelar-reserva:focus-visible { outline: 3px solid #ea580c; outline-offset: 2px; }
+.boton-cancelar-reserva:disabled { cursor: wait; opacity: .6; }
+.reserva .error-cancelar-reserva { color: #b91c1c; font-weight: 700; }
+.reserva .reserva-nota-cancelada { color: #78716c; font-style: italic; }
+
+/* Paso 100 — Pestañas de Mis reservas (cliente) */
+.pestanas-reservas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee3d9;
+}
+.pestana-reservas {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid #e7ded7;
+  border-radius: 12px;
+  padding: 11px 17px;
+  background: #fff;
+  color: #57534e;
+  font-weight: 800;
+}
+.pestana-reservas:hover { background: #fff7ed; color: #9a3412; }
+.pestana-reservas.activa {
+  background: #ea580c;
+  color: #fff;
+  border-color: #ea580c;
+}
+.pestana-reservas:focus-visible {
+  outline: 3px solid #9a3412;
+  outline-offset: 3px;
+}
+.contador-pestana {
+  display: inline-block;
+  min-width: 24px;
+  padding: 1px 7px;
+  border-radius: 20px;
+  background: #f5f5f4;
+  color: #44403c;
+  text-align: center;
+  font-size: 12px;
+}
+.pestana-reservas.activa .contador-pestana {
+  background: rgba(255,255,255,.23);
+  color: #fff;
+}
+#seccion-reservas:focus { outline: none; }
+@media (max-width: 450px) {
+  .pestanas-reservas { display: grid; grid-template-columns: 1fr 1fr; }
+  .pestana-reservas { justify-content: center; padding: 10px 8px; }
+}

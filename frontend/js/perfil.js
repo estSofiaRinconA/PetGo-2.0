@@ -1,22 +1,10 @@
 
 // ==================================================
 // PETGO 2.0 - MI PERFIL
-// Demostración de edición sin base de datos
+// Datos reales mediante nuestra API Node.js
 // ==================================================
 
 const $ = (id) => document.getElementById(id);
-
-// Datos temporales solo para la demostración.
-// Al recargar la página se restablecerán.
-
-let datosPerfil = {
-  nombre: '',
-  email: '',
-  telefono: '',
-  ciudad: ''
-};
-
-// Elementos principales
 
 const vistaLectura = $('vista-lectura');
 const formulario = $('formulario-perfil');
@@ -24,8 +12,10 @@ const botonEditar = $('boton-editar');
 const botonCancelar = $('boton-cancelar');
 const mensaje = $('mensaje-perfil');
 
+let datosPerfil = null;
+
 // --------------------------------------------------
-// MOSTRAR MENSAJES
+// MENSAJES
 // --------------------------------------------------
 
 function mostrarMensaje(texto = '', tipo = '') {
@@ -38,16 +28,60 @@ function mostrarMensaje(texto = '', tipo = '') {
 }
 
 // --------------------------------------------------
-// ACTUALIZAR DATOS VISIBLES
+// CONSULTAS A NUESTRA API
+// --------------------------------------------------
+
+async function solicitarPerfil(metodo = 'GET', datos) {
+  const opciones = {
+    method: metodo,
+    credentials: 'same-origin',
+    cache: 'no-store'
+  };
+
+  if (datos) {
+    opciones.headers = {
+      'Content-Type': 'application/json'
+    };
+
+    opciones.body = JSON.stringify(datos);
+  }
+
+  const respuesta = await fetch('/api/profile', opciones);
+
+  if (respuesta.status === 401) {
+    window.location.replace('/login.html');
+    throw new Error('Tu sesion ha terminado.');
+  }
+
+  let resultado;
+
+  try {
+    resultado = await respuesta.json();
+  } catch {
+    throw new Error('La API devolvio una respuesta invalida.');
+  }
+
+  if (!respuesta.ok || !resultado.success) {
+    throw new Error(
+      resultado.error || 'No se pudo completar la solicitud.'
+    );
+  }
+
+  return resultado.profile;
+}
+
+// --------------------------------------------------
+// MOSTRAR DATOS
 // --------------------------------------------------
 
 function mostrarDatos() {
+  if (!datosPerfil) return;
+
   $('ver-nombre').textContent =
     datosPerfil.nombre || 'Sin registrar';
 
   $('ver-email').textContent =
-    datosPerfil.email ||
-    'Disponible al iniciar sesión';
+    datosPerfil.email || 'Sin registrar';
 
   $('ver-telefono').textContent =
     datosPerfil.telefono || 'Sin registrar';
@@ -57,25 +91,51 @@ function mostrarDatos() {
 }
 
 // --------------------------------------------------
-// MOSTRAR FORMULARIO DE EDICIÓN
+// CARGAR PERFIL REAL
+// --------------------------------------------------
+
+async function cargarPerfil() {
+  botonEditar.disabled = true;
+  mostrarMensaje('Cargando tus datos...');
+
+  try {
+    datosPerfil = await solicitarPerfil();
+
+    mostrarDatos();
+
+    botonEditar.disabled = false;
+    mostrarMensaje('');
+  } catch (error) {
+    mostrarMensaje(
+      error instanceof TypeError
+        ? 'No se pudo conectar con la API de PetGo.'
+        : error.message,
+      'error'
+    );
+  }
+}
+
+// --------------------------------------------------
+// ACTIVAR EDICION
 // --------------------------------------------------
 
 function abrirEdicion() {
-  $('nombre').value = datosPerfil.nombre;
-  $('email').value = datosPerfil.email;
-  $('telefono').value = datosPerfil.telefono;
-  $('ciudad').value = datosPerfil.ciudad;
+  if (!datosPerfil) return;
+
+  $('nombre').value = datosPerfil.nombre || '';
+  $('email').value = datosPerfil.email || '';
+  $('telefono').value = datosPerfil.telefono || '';
+  $('ciudad').value = datosPerfil.ciudad || '';
 
   vistaLectura.classList.add('oculto');
   formulario.classList.remove('oculto');
 
   mostrarMensaje('');
-
   $('nombre').focus();
 }
 
 // --------------------------------------------------
-// CANCELAR EDICIÓN
+// CANCELAR EDICION
 // --------------------------------------------------
 
 function cancelarEdicion() {
@@ -87,15 +147,13 @@ function cancelarEdicion() {
 }
 
 // --------------------------------------------------
-// GUARDAR CAMBIOS EN MEMORIA TEMPORAL
+// GUARDAR CAMBIOS REALES
 // --------------------------------------------------
 
-function guardarCambios(evento) {
+async function guardarCambios(evento) {
   evento.preventDefault();
 
-  if (!formulario.reportValidity()) {
-    return;
-  }
+  if (!formulario.reportValidity()) return;
 
   const nombre = $('nombre').value.trim();
   const telefono = $('telefono').value.trim();
@@ -103,41 +161,62 @@ function guardarCambios(evento) {
 
   if (!nombre || nombre.length > 100) {
     mostrarMensaje(
-      'Ingresa un nombre válido de máximo 100 caracteres.',
+      'Ingresa un nombre valido de maximo 100 caracteres.',
       'error'
     );
-
     return;
   }
 
   if (telefono.length > 30 || ciudad.length > 100) {
     mostrarMensaje(
-      'Revisa la longitud de los datos ingresados.',
+      'Revisa la longitud de los datos.',
       'error'
     );
-
     return;
   }
 
-  // No enviamos información a ningún servidor.
-  // Conservamos el correo sin permitir su edición.
-
-  datosPerfil = {
-    ...datosPerfil,
-    nombre,
-    telefono,
-    ciudad
-  };
-
-  mostrarDatos();
-
-  formulario.classList.add('oculto');
-  vistaLectura.classList.remove('oculto');
-
-  mostrarMensaje(
-    'Vista previa actualizada. Los cambios no se han guardado en una cuenta real.',
-    'exito'
+  const botonGuardar = formulario.querySelector(
+    'button[type="submit"]'
   );
+
+  botonGuardar.disabled = true;
+  botonCancelar.disabled = true;
+  botonGuardar.textContent = 'Guardando...';
+
+  mostrarMensaje('');
+
+  try {
+    const perfilActualizado = await solicitarPerfil(
+      'PATCH',
+      {
+        nombre,
+        telefono,
+        ciudad
+      }
+    );
+
+    datosPerfil = perfilActualizado;
+    mostrarDatos();
+
+    formulario.classList.add('oculto');
+    vistaLectura.classList.remove('oculto');
+
+    mostrarMensaje(
+      'Tus datos se guardaron correctamente.',
+      'exito'
+    );
+  } catch (error) {
+    mostrarMensaje(
+      error instanceof TypeError
+        ? 'No se pudo conectar con la API de PetGo.'
+        : error.message,
+      'error'
+    );
+  } finally {
+    botonGuardar.disabled = false;
+    botonCancelar.disabled = false;
+    botonGuardar.textContent = 'Guardar cambios';
+  }
 }
 
 // --------------------------------------------------
@@ -156,6 +235,5 @@ formulario.addEventListener(
   guardarCambios
 );
 
-// Iniciar vista en modo lectura
-
-mostrarDatos();
+// Iniciar consulta a nuestra API.
+cargarPerfil();

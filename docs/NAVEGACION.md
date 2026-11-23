@@ -1,37 +1,27 @@
-# Mapa de navegación — PetGo 2.0
+# Navegación — PetGo 2.0
 
-**Corte:** 20 de noviembre de 2026. HTML/CSS/JavaScript + Vite.
+**Actualizado:** 23 de noviembre de 2026.
 
-## Páginas que existen en el proyecto según el trabajo realizado
+## Páginas públicas
 
-| Página | Accesos actuales previstos | Estado |
-|---|---|---|
-| `/index.html` (`/`) | Iniciar sesión → `/login.html`; Registrarse / Crear cuenta → `/registro.html`; Conoce nuestros servicios → `#servicios` | Informativa pública |
-| `/login.html` | enlace a `/registro.html`; logo → `/index.html` | Formulario conectado a endpoint, sesión real pendiente |
-| `/registro.html` | enlace a `/login.html`; logo → `/index.html` | Formulario conectado a endpoint, alta real pendiente |
-| `/panel.html` | logo → `/index.html`; Mis mascotas → `/mascotas.html` | **Vista previa**, no área autenticada aún |
-| `/mascotas.html` | Volver a mi espacio → `/panel.html` | Formulario local sin persistencia |
+- `index.html`: portada y presentación de servicios.
+- `login.html`: iniciar sesión.
+- `registro.html`: crear cuenta.
+- `recuperar.html`: recuperar contraseña con OTP; comprobación completa pendiente.
 
-## Destinos que todavía NO existen
+## Cliente autenticado
 
-- `/reservar.html`: reservar nuevo servicio.
-- `/reservas.html`: historial y estados de reservas.
-- `/perfil.html`: datos personales.
+- `panel.html`: vista general y accesos principales.
+- `mascotas.html`: mascotas registradas.
+- `reservar.html`: nueva solicitud de reserva.
+- `reservas.html`: reservas activas e historial.
+- `perfil.html`: información y ajustes del perfil.
 
-En `panel.html` hay enlaces preparados hacia esos destinos. **Para no llevar al usuario a un 404**, `frontend/js/navigation-guard.js` muestra un aviso local cuando se pulsan esos accesos. El aviso **no crea la función ni reemplaza el control de permisos**. Al implementar una página real, quitar su ruta de `pendientes` dentro del JS.
+## Administración
 
-## Instalación del aviso local
+- `admin.html`: reservas y estados administrativos.
+- `admin-agenda.html`: reglas de agenda.
 
-El paquete de cierre incluye `tools/aplicar-navegacion.ps1` y `frontend/js/navigation-guard.js`. Ejecutar el instalador **desde la raíz del repo** siguiendo `INSTRUCCIONES.md`; hace copia de seguridad de `panel.html` e inserta la importación sin reemplazar el diseño.
+La autorización real corresponde al backend. Es posible que los archivos HTML sean accesibles por URL, pero **sus datos y acciones privadas deben exigir permisos**.
 
-**No enlazar automáticamente `login.html` a `panel.html` como si hubiera sesión válida:** ahora el formulario de login no persiste sesión segura; el panel solo debe abrirse manualmente en desarrollo. En producción proteger la página y, especialmente, la API.
-
-## Comprobación manual de navegación
-
-1. Abrir `http://localhost:5173/`.
-2. Probar Inicio → Iniciar sesión → Registrarse → Iniciar sesión.
-3. Probar logo de login/registro → Inicio.
-4. Abrir **manualmente para vista previa** `http://localhost:5173/panel.html`.
-5. Probar Accesos rápidos → Mis mascotas → Volver al panel.
-6. Probar Reservar, Mis reservas y Mis datos: deben mostrar mensaje de «en preparación», **sin navegar a un 404**.
-7. Comprobar campana y menú perfil, Escape y clic fuera; el cierre de sesión sigue pendiente de integración.
+El botón flotante de accesibilidad y el aviso de cookies se insertan en todas las páginas HTML al servir `frontend/dist` con `backend/production.js`.

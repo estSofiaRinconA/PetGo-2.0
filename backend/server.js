@@ -1,130 +1,61 @@
-﻿
-// ======================================================
-// PETGO 2.0 - API PROPIA NODE.JS
-// Estado: sin conexion a bases de datos
-// ======================================================
-
+// PETGO 2.0 — API Node.js
 const http = require('node:http');
-
 const PORT = Number(process.env.PORT || 3000);
-
-// ------------------------------------------------------
-// RESPUESTAS JSON
-// ------------------------------------------------------
-
-function responder(res, codigo, contenido, extra = {}) {
-  res.writeHead(codigo, {
-    'Content-Type': 'application/json; charset=utf-8',
-    'Cache-Control': 'no-store',
-    ...extra
-  });
-
-  return res.end(JSON.stringify(contenido));
+function responder(res,codigo,contenido,extra={}) {
+  res.writeHead(codigo,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...extra});
+  res.end(JSON.stringify(contenido));
 }
-
-// ------------------------------------------------------
-// RUTAS RESERVADAS PARA LA NUEVA IMPLEMENTACION
-// ------------------------------------------------------
-
-const rutasPendientes = new Map([
-  ['/api/services', ['GET']],
-  ['/api/auth/register', ['POST']],
-  ['/api/auth/login', ['POST']],
-  ['/api/auth/me', ['GET']],
-  ['/api/pets', ['GET', 'POST']],
-  ['/api/reservations', ['GET', 'POST']],
-  ['/api/profile', ['GET', 'PATCH']],
-  ['/api/notifications', ['GET']]
+const rutas = new Map([
+  ['/api/auth/register',['POST']], ['/api/auth/login',['POST']],
+  ['/api/auth/me',['GET']], ['/api/auth/logout',['POST']],
+  ['/api/auth/password/recovery',['POST']], ['/api/auth/password/verify',['POST']], ['/api/auth/password/reset',['POST']],
+  ['/api/profile',['GET','PATCH']], ['/api/pets',['GET','POST']], ['/api/pets/item',['PATCH','DELETE']],
+  ['/api/services',['GET']], ['/api/reservations',['GET','POST']], ['/api/reservations/cancel',['PATCH']],
+  ['/api/notifications',['GET']], ['/api/notifications/read',['PATCH']],
+  ['/api/admin/me',['GET']], ['/api/admin/bookings',['GET']], ['/api/admin/bookings/status',['PATCH']], ['/api/admin/schedule',['GET','PATCH']]
 ]);
-
-// ------------------------------------------------------
-// SERVIDOR HTTP
-// ------------------------------------------------------
-
-const server = http.createServer((req, res) => {
-  // Respuesta a solicitudes OPTIONS
-
-  if (req.method === 'OPTIONS') {
-    res.writeHead(204);
-    return res.end();
-  }
-
+const server = http.createServer(async(req,res)=>{
+  if(req.method==='OPTIONS'){res.writeHead(204);return res.end();}
   let pathname;
-
-  try {
-    pathname = new URL(
-      req.url,
-      `http://${req.headers.host || 'localhost'}`
-    ).pathname;
-  } catch {
-    return responder(res, 400, {
-      success: false,
-      error: 'URL invalida'
-    });
+  try{pathname=new URL(req.url,`http://${req.headers.host||'localhost'}`).pathname;}
+  catch{return responder(res,400,{success:false,error:'URL invalida'});}
+  if(pathname==='/' && req.method==='GET')return responder(res,200,{success:true,message:'API PetGo 2.0 activa'});
+  const metodos=rutas.get(pathname);
+  if(!metodos)return responder(res,404,{success:false,error:'Ruta no encontrada'});
+  if(!metodos.includes(req.method))return responder(res,405,{success:false,error:'M\u00e9todo no permitido'},{Allow:metodos.join(', ')});
+  if(pathname.startsWith('/api/auth/password/')){
+    try{return await require('./routes/password.routes').manejarPassword(req,res,pathname);}
+    catch(err){console.error('Password:',err.name||'Error');return responder(res,503,{success:false,error:'Recuperacion no disponible.'});}
   }
-
-  // Comprobar que nuestra API esta activa
-
-  if (pathname === '/' && req.method === 'GET') {
-    return responder(res, 200, {
-      success: true,
-      message: 'API PetGo 2.0 activa',
-      database: 'sin configurar'
-    });
+  if(pathname.startsWith('/api/auth/')){
+    try{return await require('./routes/auth.routes').manejarAuth(req,res,pathname);}
+    catch(err){console.error('Auth:',err.name||'Error');return responder(res,503,{success:false,error:'Autenticacion no disponible.'});}
   }
-
-  // Rutas que posteriormente usaran la nueva base
-
-  const metodos = rutasPendientes.get(pathname);
-
-  if (metodos) {
-    if (!metodos.includes(req.method)) {
-      return responder(
-        res,
-        405,
-        {
-          success: false,
-          error: 'M\u00e9todo no permitido'
-        },
-        {
-          Allow: metodos.join(', ')
-        }
-      );
-    }
-
-    return responder(res, 503, {
-      success: false,
-      error: (
-        'Funcion temporalmente no disponible: ' +
-        'nueva base de datos pendiente'
-      )
-    });
+  if(pathname==='/api/profile'){
+    try{return await require('./routes/profile.routes').manejarPerfil(req,res);}
+    catch(err){console.error('Profile:',err.name||'Error');return responder(res,503,{success:false,error:'Perfil no disponible.'});}
   }
-
-  // Ruta inexistente
-
-  return responder(res, 404, {
-    success: false,
-    error: 'Ruta no encontrada'
-  });
+  if(pathname==='/api/services'){
+    try{return await require('./routes/services.routes').handleServices(req,res);}
+    catch(err){console.error('Services:',err.name||'Error');return responder(res,503,{success:false,error:'Catalogo no disponible.'});}
+  }
+  if(pathname==='/api/reservations' || pathname==='/api/reservations/cancel'){
+    try{return await require('./routes/reservations.routes').handleReservations(req,res,pathname);}
+    catch(err){console.error('Reservations:',err.name||'Error');return responder(res,503,{success:false,error:'Reservas no disponible.'});}
+  }
+  if(pathname==='/api/notifications' || pathname==='/api/notifications/read'){
+    try{return await require('./routes/notifications.routes').handleNotifications(req,res,pathname);}
+    catch(err){console.error('Notifications:',err.name||'Error');return responder(res,503,{success:false,error:'Notificaciones no disponibles.'});}
+  }
+  if(pathname.startsWith('/api/admin/')){
+    try{return await require('./routes/admin.routes').handleAdmin(req,res,pathname);}
+    catch(err){console.error('Admin:',err.name||'Error');return responder(res,503,{success:false,error:'Administracion no disponible.'});}
+  }
+  if(pathname==='/api/pets' || pathname==='/api/pets/item'){
+    try{return await require('./routes/pets.routes').handlePets(req,res);}
+    catch(err){console.error('Pets:',err.name||'Error');return responder(res,503,{success:false,error:'Mascotas no disponible.'});}
+  }
+  return responder(res,503,{success:false,error:'Funcion temporalmente no disponible: integracion pendiente.'});
 });
-
-// ------------------------------------------------------
-// INICIAR SERVIDOR
-// ------------------------------------------------------
-
-if (require.main === module) {
-  server.listen(PORT, () => {
-    console.log(
-      `API PetGo activa en http://localhost:${PORT}`
-    );
-
-    console.log(
-      'Base de datos: pendiente de configurar'
-    );
-  });
-}
-
-// Permitir ejecutar pruebas automatizadas
-
-module.exports = server;
+if(require.main===module)server.listen(PORT,()=>console.log(`API PetGo activa en http://localhost:${PORT}`));
+module.exports=server;
