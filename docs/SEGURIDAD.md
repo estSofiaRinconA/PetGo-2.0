@@ -1,31 +1,30 @@
-# Seguridad — PetGo 2.0
+# Seguridad y privacidad — PetGo 2.0
 
-**Actualizado:** 20 de noviembre de 2026.
+**Actualizado:** 23 de noviembre de 2026.
 
-## Implementado parcialmente
+## Controles presentes en el código
 
-- `backend/.env` no debe versionarse; cliente administrativo usa clave privilegiada **solo en backend**.
-- Middleware Bearer valida token con Supabase Auth y asigna usuario a la solicitud.
-- Login/registro con validaciones básicas; pruebas automatizadas simuladas, no integración real.
-- Código de `/api/pets` filtra por `req.user.id` y toma propietario del token, no del cuerpo enviado.
-- `petgo_v2` aislado lógicamente de `public`, pero comparte Supabase Auth y proyecto.
-- RLS de `profiles`, `pets` y `bookings` activado y forzado; no confundir FORCE RLS con permiso automático del backend.
+- Credenciales privilegiadas de Supabase reservadas al backend; `.env` está ignorado por Git.
+- Cookies de autenticación `HttpOnly`, `SameSite=Lax` y `Secure` cuando `NODE_ENV=production`.
+- Reglas de acceso administrativas consultadas en la base de datos; los roles no se eligen desde el navegador.
+- Restricción de solicitudes y comprobación de origen en el flujo OTP; cookie temporal de recuperación, limitada y de un solo uso según la implementación.
+- El aviso de cookies corresponde a sesiones y preferencias locales; no supone una plataforma de consentimiento publicitario.
 
-## Bloqueos antes de publicar
+## Pruebas y límites pendientes
 
-1. Confirmar las migraciones `010` y `011`, trigger de creación de perfiles y compatibilidad con RLS forzado; verificar operación real controlada.
-2. Diseñar sesiones del navegador y cierre de sesión seguros. El código de login devuelve tokens; **evitar exponerlos accidentalmente o guardarlos sin un modelo de amenaza**. El frontend de demostración no guarda tokens.
-3. Controlar acceso a catálogo detallado en la API (`GET /api/services` sigue público en la versión actual) y a todos los endpoints privados; no basta esconder botones.
-4. Probar que usuarios no acceden ni modifican mascotas ajenas y no pueden convertirse en `admin` desde el formulario.
-5. Configurar CORS para producción, límites de peticiones, errores sin filtración de datos, accesibilidad y privacidad.
-6. Evitar desplegar `panel.html` como panel real sin comprobación de sesión: actualmente es una vista de diseño.
+1. Confirmar persistencia de las cookies tras refrescar, abrir pestaña nueva y renovar sesión.
+2. Probar negativamente todas las rutas administrativas con cuenta cliente y las rutas de cliente con cuenta administradora.
+3. Completar análisis CSRF/origen en todas las mutaciones, gestión de expiración y limitación de solicitudes.
+4. Auditar seguridad de capacidad/solapamiento de reservas, propiedad de datos, RLS y privilegios de Supabase.
+5. Ejecutar recuperación OTP completa y revisar SMTP, códigos caducados y reinicios del servidor. Los tickets OTP actualmente se almacenan en memoria, no en almacenamiento compartido.
+6. Revisar accesibilidad y cumplimiento legal de privacidad y cookies antes de uso público real.
 
-## Revisión antes de commit
+## Antes de publicar código
 
-```powershell
+```cmd
 git check-ignore backend/.env
 git status --short
 git diff --cached --name-only
 ```
 
-No compartir `.env`, contraseñas, refresh tokens ni claves de Supabase. Si una clave se publica por error, rotarla y revisar historial.
+Nunca versionar `.env`, contraseñas, claves de servicio, correos privados de usuarios ni respaldos con datos sensibles. Si se divulga un secreto, revocarlo y rotarlo.

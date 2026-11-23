@@ -1,18 +1,19 @@
-# Manual de administración — PetGo 2.0
+# Manual del administrador — PetGo 2.0
 
-**Estado al 20 de noviembre de 2026: planificación.** El panel de administración **no está implementado**. No se ha añadido ningún acceso «Soy administrador» al sitio público.
+**Actualizado:** 23 de noviembre de 2026.
 
-## Diseño previsto
+## Entrada
 
-La misma autenticación de clientes, con autorización estricta según rol persistido en la base de datos. Un usuario no puede darse permisos `admin` durante el registro.
+El administrador utiliza el mismo formulario de inicio de sesión que el cliente. La API consulta la autorización administrativa y redirige al panel `admin.html` cuando corresponde; no se activa el rol desde el registro público.
 
-## Funciones futuras
+## Gestionar reservas
 
-- Mantener modalidades y disponibilidad de Paseos y Baño y peluquería.
-- Definir y publicar precios y duración antes de habilitar reservas.
-- Revisar y gestionar solicitudes y estados de reservas.
-- Consultar información personal solo cuando sea necesario y autorizado.
+En el panel se muestran reservas activas y su historial. El personal autorizado puede revisar solicitudes, confirmar las pendientes y completar las confirmadas. Los cambios se registran mediante los mecanismos de auditoría del proyecto y pueden generar notificaciones al cliente.
 
-## Seguridad antes de implementar
+## Agenda
 
-Comprobar cada petición administrativa en el backend, políticas RLS y privilegios mínimos; probar que un usuario cliente recibe denegación. No habilitar funciones hasta tener pruebas y reglas definidas.
+En `admin-agenda.html` se consultan y ajustan reglas por día de la semana, horarios y características de las modalidades de servicio. Las reglas configuradas se almacenan en Supabase a través de la API; el cálculo de disponibilidad por solapamientos y cupo requiere revisión adicional.
+
+## Seguridad y cierre de sesión
+
+Usar el botón **Cerrar sesión** al terminar. La protección debe comprobarse en el backend para cada ruta `/api/admin/*` y se debe verificar con una cuenta de cliente que la API deniegue los accesos indebidos. No compartir cuentas administrativas.

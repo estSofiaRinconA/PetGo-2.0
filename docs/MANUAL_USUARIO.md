@@ -1,60 +1,29 @@
 # Manual de usuario — PetGo 2.0
 
-**Versión:** 0.2, 20 de noviembre de 2026. **Estado:** prototipo local; funciones privadas aún no listas.
+**Actualizado:** 23 de noviembre de 2026.
 
-## ¿Qué es PetGo?
+## Acceder
 
-PetGo presenta servicios para mascotas administrados directamente por la plataforma. La versión actual se concentra en **Paseos** y **Baño y peluquería**; no incorpora perfiles públicos de profesionales ni proveedores externos.
+Abrir la [web pública](../README.md#-sitio-web), elegir **Registrarse** o **Iniciar sesión**. El registro solicita datos de cuenta y confirmación por correo. Después de iniciar sesión como cliente, se abre el panel privado.
 
-## 1. Conocer PetGo sin registrarse
+## Mascotas
 
-1. Abrir `http://localhost:5173/` durante el desarrollo local.
-2. Elegir **Conoce nuestros servicios** para ir a la explicación pública.
-3. Leer las posibilidades previstas: paseos individuales o grupales; alternativas de baño y peluquería.
-4. Para conocer catálogo detallado, precios y reservar, usar **Registrarse** o **Iniciar sesión** cuando las funciones privadas estén activadas.
+En **Mis mascotas** es posible consultar y registrar mascotas, actualizar sus datos y eliminarlas cuando las reglas de reservas lo permiten. Los registros se consultan en Supabase mediante la API propia de PetGo.
 
-La página pública es **informativa**: las modalidades mencionadas son propuestas, no garantía de disponibilidad ni precio.
+## Reservas y notificaciones
 
-## 2. Registrarse (interfaz disponible; alta real pendiente de validación)
+En **Reservar**, seleccionar modalidad, mascota, fecha y horario disponibles según los controles implementados. En **Mis reservas**, consultar las activas y el historial; una reserva pendiente puede cancelarse si la API lo permite. Las notificaciones muestran cambios vinculados con las solicitudes.
 
-1. Pulsar **Registrarse** o **Crear mi cuenta**.
-2. Completar nombre, correo, contraseña de al menos 12 caracteres y confirmación.
-3. Si las contraseñas difieren, el formulario muestra un aviso.
-4. El botón **Crear mi cuenta** intenta comunicarse con `/api/auth/register`.
+La disponibilidad mostrada no implica que esté auditado el cálculo de todos los solapamientos de duración y cupo; es una limitación conocida.
 
-**Precaución:** el trigger de perfiles y los permisos de Supabase todavía deben validarse antes de utilizar cuentas reales. No interpretar un formulario visual como garantía de alta completada.
+## Perfil, cierre y recuperación
 
-## 3. Iniciar sesión (integración pendiente)
+Desde **Perfil** consultar o actualizar datos. Usar **Cerrar sesión** al terminar. La recuperación de contraseña solicita correo, verifica un código OTP y solo entonces muestra nueva contraseña y confirmación; su envío SMTP y su resultado final deben probarse en el entorno de entrega.
 
-1. Abrir **Iniciar sesión**.
-2. Introducir correo y contraseña.
-3. El formulario llama a `/api/auth/login` cuando el backend está activo.
+## Cookies y accesibilidad
 
-La sesión del navegador, la redirección a un panel seguro y el cierre de sesión **no están terminados**. No se guardan tokens mediante el JavaScript del prototipo.
+El aviso informa sobre las cookies necesarias para la sesión y el almacenamiento local de preferencias. El botón flotante **Accesibilidad** permite alto contraste, tamaño de texto (100 % a 150 %) y lectura en voz alta, si el navegador la admite. La preferencia de aviso y los ajustes de accesibilidad se guardan en el propio navegador.
 
-## 4. Conocer el panel (vista previa local)
+## Recomendaciones
 
-Durante el desarrollo se puede abrir directamente `http://localhost:5173/panel.html` para **ver el diseño**, no para acceder a datos protegidos. Incluye:
-
-- **Reservar un servicio:** futuro proceso para crear una reserva.
-- **Mis mascotas:** abre `mascotas.html`.
-- **Mis reservas:** futuro historial de reservas.
-- **Campana:** menú visual de notificaciones (sin datos reales).
-- **Mi perfil:** acceso visual a datos personales y cierre de sesión (pendientes).
-
-## 5. Mis mascotas (formulario visual)
-
-1. Desde la vista previa del panel, pulsar **Mis mascotas**.
-2. Pulsar **Agregar mascota**.
-3. Completar nombre, especie, raza opcional y observaciones opcionales.
-4. Pulsar **Guardar mascota**: **actualmente solo valida; NO guarda información en Supabase**.
-5. Pulsar **Cancelar** para cerrar sin guardar.
-6. Usar **Volver a mi espacio** para regresar al panel.
-
-## 6. Funciones todavía no disponibles
-
-Reservar y pagar servicios, consultar precios detallados desde sesión autenticada, ver historial real, recibir notificaciones reales, actualizar perfil y cerrar sesión de forma segura. No ingresar información personal real en flujos no validados.
-
-## 7. Problemas frecuentes
-
-Si un enlace dice «en preparación», todavía no se ha implementado. Si aparece un error de conexión, revisar el estado de Vite (`5173`) y Node.js (`3000`) en [`MANUAL_ERRORES.md`](MANUAL_ERRORES.md).
+Utilizar cuentas de demostración y no publicar información privada. Si la sesión se pierde al actualizar, reportarlo como error pendiente, no como funcionamiento normal.
