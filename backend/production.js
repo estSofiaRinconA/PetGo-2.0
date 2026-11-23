@@ -60,6 +60,21 @@ async function serveWeb(req, res) {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     res.setHeader('Cache-Control', rel.startsWith('assets/') ? 'public, max-age=31536000, immutable' : 'no-cache');
+    if (path.extname(filePath).toLowerCase() === '.html') {
+      // Add the global accessibility panel and cookie notice to all Vite pages.
+      // No source HTML files or existing auth/API routes need modification.
+      let html = await fs.promises.readFile(filePath, 'utf8');
+      const injection = '<link rel="stylesheet" href="/petgo-accesibilidad.css">' +
+        '<script src="/petgo-accesibilidad.js" defer></script>';
+      if (!html.includes('/petgo-accesibilidad.js')) {
+        html = /<\/head>/i.test(html) ? html.replace(/<\/head>/i, injection + '</head>') : injection + html;
+      }
+      const data = Buffer.from(html);
+      res.setHeader('Content-Length', data.length);
+      res.writeHead(200);
+      if (req.method === 'HEAD') res.end(); else res.end(data);
+      return;
+    }
     res.setHeader('Content-Length', stat.size);
     res.writeHead(200);
     if (req.method === 'HEAD') { res.end(); return; }
