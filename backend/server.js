@@ -6,6 +6,7 @@ function responder(res,codigo,contenido,extra={}) {
   res.end(JSON.stringify(contenido));
 }
 const rutas = new Map([
+  ['/api/auth/google/start',['GET']], ['/api/auth/google/callback',['GET']],
   ['/api/auth/register',['POST']], ['/api/auth/login',['POST']],
   ['/api/auth/me',['GET']], ['/api/auth/logout',['POST']],
   ['/api/auth/password/recovery',['POST']], ['/api/auth/password/verify',['POST']], ['/api/auth/password/reset',['POST']],
@@ -27,6 +28,9 @@ const server = http.createServer(async(req,res)=>{
   if(pathname.startsWith('/api/auth/password/')){
     try{return await require('./routes/password.routes').manejarPassword(req,res,pathname);}
     catch(err){console.error('Password:',err.name||'Error');return responder(res,503,{success:false,error:'Recuperacion no disponible.'});}
+  }
+  if(pathname.startsWith('/api/auth/google/')){
+    return require('./routes/google.routes').manejarGoogle(req,res,pathname);
   }
   if(pathname.startsWith('/api/auth/')){
     try{return await require('./routes/auth.routes').manejarAuth(req,res,pathname);}

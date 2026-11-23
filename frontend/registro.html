@@ -7,6 +7,7 @@
   <title>Registrarse | PetGo</title>
   <link rel="stylesheet" href="/css/auth.css">
   <script src="/js/auth.js" type="module"></script>
+  <link rel="stylesheet" href="/google-oauth.css">
 </head>
 <body>
   <header class="encabezado">
@@ -73,6 +74,13 @@
           Crear mi cuenta
         </button>
       </form>
+      <div class="petgo-google-area">
+        <span class="petgo-google-separador">o continúa con</span>
+        <a class="petgo-google-btn" href="/api/auth/google/start" aria-label="Registrarse con Google">
+          <span aria-hidden="true" class="google-mark">G</span> Registrarse con Google
+        </a>
+      </div>
+
 
       <p id="mensaje" class="mensaje" role="status" aria-live="polite"></p>
 

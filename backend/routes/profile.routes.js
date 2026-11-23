@@ -251,7 +251,11 @@ async function consultarPerfil(res, usuario) {
       nombre: data.nombre,
       email: usuario.email || '',
       telefono: data.telefono,
-      ciudad: data.ciudad
+      ciudad: data.ciudad,
+      // Proveedores identificados por Supabase Auth, nunca por el navegador.
+      auth_providers: Array.isArray(usuario.app_metadata?.providers)
+        ? usuario.app_metadata.providers.filter(p => p === 'google' || p === 'email')
+        : []
     }
   });
 }
@@ -455,10 +459,10 @@ async function actualizarSeguridad(req, res, identidad, pathname) {
   } else {
     if (typeof datos.newPassword !== 'string' ||
         typeof datos.confirmPassword !== 'string' ||
-        datos.newPassword.length < 10 || datos.newPassword.length > 128 ||
+        datos.newPassword.length < 12 || datos.newPassword.length > 128 ||
         datos.newPassword !== datos.confirmPassword ||
         datos.newPassword === clave) {
-      return responder(res, 400, { success: false, error: 'La nueva contrasena debe tener al menos 10 caracteres, ser diferente de la actual y coincidir con su confirmacion.' });
+      return responder(res, 400, { success: false, error: 'La nueva contrasena debe tener al menos 12 caracteres, ser diferente de la actual y coincidir con su confirmacion.' });
     }
     cambios = { password: datos.newPassword };
   }

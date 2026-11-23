@@ -7,6 +7,8 @@
   <title>Iniciar sesión | PetGo</title>
   <link rel="stylesheet" href="/css/auth.css">
   <script src="/js/auth.js" type="module"></script>
+  <link rel="stylesheet" href="/google-oauth.css">
+  <script src="/google-error.js" defer></script>
 </head>
 <body>
   <header class="encabezado">
@@ -50,6 +52,13 @@
           Iniciar sesión
         </button>
       </form>
+      <div class="petgo-google-area">
+        <span class="petgo-google-separador">o continúa con</span>
+        <a class="petgo-google-btn" href="/api/auth/google/start" aria-label="Continuar con Google">
+          <span aria-hidden="true" class="google-mark">G</span> Continuar con Google
+        </a>
+      </div>
+
 
       <p class="cambiar"><a href="/recuperar.html">¿Olvidaste tu contraseña?</a></p>
 

@@ -192,6 +192,12 @@
         <h2 id="titulo-seguridad">Seguridad de tu cuenta</h2>
         <p>Cambia tu correo o contraseña verificando primero tu contraseña actual.</p>
 
+        <p id="petgo-google-account" class="ayuda" role="status" hidden>
+          Esta cuenta utiliza Google para iniciar sesión y no necesita una contraseña de PetGo.
+          Si deseas crear una contraseña para entrar también con correo, usa la
+          <a href="/recuperar.html">verificación de correo y código OTP</a>.
+          Para cambiar el correo desde este perfil, primero establece una contraseña mediante ese proceso.
+        </p>
         <div class="seguridad-paneles">
           <details class="seguridad-panel" id="panel-email">
             <summary>Cambiar correo electrónico</summary>
@@ -220,13 +226,13 @@
               </div>
               <div class="campo">
                 <label for="seguridad-clave-nueva">Nueva contraseña</label>
-                <input id="seguridad-clave-nueva" type="password" autocomplete="new-password" minlength="10" maxlength="128" required>
+                <input id="seguridad-clave-nueva" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
               </div>
               <div class="campo">
                 <label for="seguridad-clave-confirmar">Confirmar contraseña nueva</label>
-                <input id="seguridad-clave-confirmar" type="password" autocomplete="new-password" minlength="10" maxlength="128" required>
+                <input id="seguridad-clave-confirmar" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
               </div>
-              <p class="ayuda">Debe contener al menos 10 caracteres. Después del cambio tendrás que iniciar sesión nuevamente.</p>
+              <p class="ayuda">Debe contener al menos 12 caracteres. Después del cambio tendrás que iniciar sesión nuevamente.</p>
               <button class="boton-principal" type="submit">Actualizar contraseña</button>
               <p id="mensaje-password" class="mensaje" role="status" aria-live="polite"></p>
             </form>
