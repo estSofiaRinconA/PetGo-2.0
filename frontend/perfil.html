@@ -186,17 +186,52 @@
       ></p>
     </section>
 
-    <section class="tarjeta-seguridad">
-      <div class="seguridad-icono" aria-hidden="true">
-        🔒
-      </div>
-
+    <section class="tarjeta-seguridad" aria-labelledby="titulo-seguridad">
+      <div class="seguridad-icono" aria-hidden="true">🔒</div>
       <div class="seguridad-texto">
-        <h2>Seguridad de tu cuenta</h2>
-        <p>
-          La opción para cambiar tu contraseña estará
-          disponible en una próxima etapa de PetGo.
-        </p>
+        <h2 id="titulo-seguridad">Seguridad de tu cuenta</h2>
+        <p>Cambia tu correo o contraseña verificando primero tu contraseña actual.</p>
+
+        <div class="seguridad-paneles">
+          <details class="seguridad-panel" id="panel-email">
+            <summary>Cambiar correo electrónico</summary>
+            <form id="formulario-email" class="seguridad-formulario">
+              <p>Correo actual: <strong id="email-actual">Cargando...</strong></p>
+              <div class="campo">
+                <label for="seguridad-nuevo-email">Nuevo correo</label>
+                <input id="seguridad-nuevo-email" type="email" autocomplete="email" maxlength="254" required>
+              </div>
+              <div class="campo">
+                <label for="seguridad-clave-email">Contraseña actual</label>
+                <input id="seguridad-clave-email" type="password" autocomplete="current-password" required>
+              </div>
+              <p class="ayuda">Te enviaremos la confirmación por correo. No perderás tu correo actual hasta completar la verificación.</p>
+              <button class="boton-principal" type="submit">Solicitar cambio de correo</button>
+              <p id="mensaje-email" class="mensaje" role="status" aria-live="polite"></p>
+            </form>
+          </details>
+
+          <details class="seguridad-panel" id="panel-password">
+            <summary>Cambiar contraseña</summary>
+            <form id="formulario-password" class="seguridad-formulario">
+              <div class="campo">
+                <label for="seguridad-clave-actual">Contraseña actual</label>
+                <input id="seguridad-clave-actual" type="password" autocomplete="current-password" required>
+              </div>
+              <div class="campo">
+                <label for="seguridad-clave-nueva">Nueva contraseña</label>
+                <input id="seguridad-clave-nueva" type="password" autocomplete="new-password" minlength="10" maxlength="128" required>
+              </div>
+              <div class="campo">
+                <label for="seguridad-clave-confirmar">Confirmar contraseña nueva</label>
+                <input id="seguridad-clave-confirmar" type="password" autocomplete="new-password" minlength="10" maxlength="128" required>
+              </div>
+              <p class="ayuda">Debe contener al menos 10 caracteres. Después del cambio tendrás que iniciar sesión nuevamente.</p>
+              <button class="boton-principal" type="submit">Actualizar contraseña</button>
+              <p id="mensaje-password" class="mensaje" role="status" aria-live="polite"></p>
+            </form>
+          </details>
+        </div>
       </div>
     </section>
   </main>

@@ -101,7 +101,7 @@ async function obtenerUsuario(req, res) {
       );
 
     if (!error && data?.user) {
-      return data.user;
+      return { user: data.user, token: cookies.petgo_access };
     }
   }
 
@@ -113,7 +113,7 @@ async function obtenerUsuario(req, res) {
 
     if (!error && data?.user && data?.session) {
       guardarCookies(res, data.session);
-      return data.user;
+      return { user: data.user, token: data.session.access_token };
     }
   }
 
@@ -367,62 +367,161 @@ async function actualizarPerfil(req, res, usuario) {
 }
 
 // -----------------------------------------------------
+// CAMBIAR EMAIL Y CONTRASENA
+// -----------------------------------------------------
+
+// Proteccion basica por cuenta contra intentos reiterados. En servicios con
+// varias instancias, trasladar este limite a almacenamiento compartido.
+const intentos = new Map();
+function permitirIntento(id) {
+  const ahora = Date.now();
+  const actual = intentos.get(id);
+  if (!actual || actual.hasta < ahora) {
+    intentos.set(id, { cantidad: 1, hasta: ahora + 15 * 60 * 1000 });
+    return true;
+  }
+  if (actual.cantidad >= 5) return false;
+  actual.cantidad++;
+  return true;
+}
+
+async function comprobarClaveActual(usuario, clave) {
+  if (!usuario.email || typeof clave !== 'string' || !clave) return false;
+  const { data, error } = await supabaseAuth.auth.signInWithPassword({
+    email: usuario.email,
+    password: clave
+  });
+  return !error && data?.user?.id === usuario.id;
+}
+
+// Emplea el token del propio usuario. No usa service_role para cambiar
+// identidad y respeta las confirmaciones configuradas en Supabase Auth.
+async function actualizarIdentidad(token, cambios) {
+  const url = process.env.SUPABASE_URL;
+  const clavePublica = process.env.SUPABASE_PUBLISHABLE_KEY;
+  const respuesta = await fetch(`${url.replace(/\/$/, '')}/auth/v1/user`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'apikey': clavePublica,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(cambios),
+    signal: AbortSignal.timeout(15000)
+  });
+  if (!respuesta.ok) {
+    let codigo = '';
+    try {
+      const fallo = await respuesta.json();
+      codigo = fallo.code || fallo.error_code || '';
+    } catch { /* no divulgar respuesta del proveedor */ }
+    console.error('Actualizacion de seguridad rechazada:', respuesta.status, codigo);
+    if (respuesta.status === 429) return { ok: false, status: 429, mensaje: 'Demasiadas solicitudes. Intenta mas tarde.' };
+    if (respuesta.status === 401) return { ok: false, status: 401, mensaje: 'Tu sesion expiro. Inicia sesion de nuevo.' };
+    if (respuesta.status === 422 || respuesta.status === 400) return { ok: false, status: 400, mensaje: 'Supabase no acepto el cambio. Revisa el correo o la politica de contrasenas.' };
+    return { ok: false, status: 503, mensaje: 'No se pudo completar el cambio en este momento.' };
+  }
+  return { ok: true };
+}
+
+async function actualizarSeguridad(req, res, identidad, pathname) {
+  const usuario = identidad.user;
+  const datos = await leerJSON(req);
+  const esEmail = pathname === '/api/profile/security/email';
+  const campos = esEmail ? ['currentPassword', 'newEmail'] :
+    ['currentPassword', 'newPassword', 'confirmPassword'];
+
+  if (Object.keys(datos).length !== campos.length ||
+      Object.keys(datos).some(campo => !campos.includes(campo))) {
+    return responder(res, 400, { success: false, error: 'Formulario de seguridad invalido.' });
+  }
+
+  const clave = datos.currentPassword;
+  if (typeof clave !== 'string' || !clave || clave.length > 1024) {
+    return responder(res, 400, { success: false, error: 'Ingresa tu contrasena actual.' });
+  }
+
+  let cambios;
+  if (esEmail) {
+    if (typeof datos.newEmail !== 'string') {
+      return responder(res, 400, { success: false, error: 'Correo invalido.' });
+    }
+    const nuevo = datos.newEmail.trim().toLowerCase();
+    if (nuevo.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nuevo) ||
+        nuevo === (usuario.email || '').toLowerCase()) {
+      return responder(res, 400, { success: false, error: 'Introduce un correo diferente y valido.' });
+    }
+    cambios = { email: nuevo };
+  } else {
+    if (typeof datos.newPassword !== 'string' ||
+        typeof datos.confirmPassword !== 'string' ||
+        datos.newPassword.length < 10 || datos.newPassword.length > 128 ||
+        datos.newPassword !== datos.confirmPassword ||
+        datos.newPassword === clave) {
+      return responder(res, 400, { success: false, error: 'La nueva contrasena debe tener al menos 10 caracteres, ser diferente de la actual y coincidir con su confirmacion.' });
+    }
+    cambios = { password: datos.newPassword };
+  }
+
+  if (!permitirIntento(usuario.id)) {
+    return responder(res, 429, { success: false, error: 'Demasiados intentos. Intenta nuevamente en 15 minutos.' });
+  }
+  const valida = await comprobarClaveActual(usuario, clave);
+  if (!valida) {
+    return responder(res, 403, { success: false, error: 'La contrasena actual no es correcta o esta cuenta no usa contrasena.' });
+  }
+
+  const resultado = await actualizarIdentidad(identidad.token, cambios);
+  if (!resultado.ok) {
+    return responder(res, resultado.status, { success: false, error: resultado.mensaje });
+  }
+  intentos.delete(usuario.id);
+  if (esEmail) {
+    return responder(res, 200, {
+      success: true,
+      message: 'Solicitud enviada. Revisa los mensajes de confirmacion del correo anterior y del nuevo, segun la configuracion de Supabase. El correo de acceso solo cambia cuando se confirma.'
+    });
+  }
+  borrarCookies(res);
+  return responder(res, 200, {
+    success: true,
+    message: 'Contrasena actualizada. Inicia sesion nuevamente.'
+  });
+}
+
+// -----------------------------------------------------
 // ENRUTADOR
 // -----------------------------------------------------
 
-async function manejarPerfil(req, res) {
+async function manejarPerfil(req, res, pathname = '/api/profile') {
   try {
-    if (
-      req.method === 'PATCH' &&
-      !origenPermitido(req)
-    ) {
-      return responder(res, 403, {
-        success: false,
-        error: 'Origen de solicitud no permitido.'
-      });
+    if (req.method === 'PATCH' && !origenPermitido(req)) {
+      return responder(res, 403, { success: false, error: 'Origen de solicitud no permitido.' });
     }
 
-    const usuario = await obtenerUsuario(req, res);
-
-    if (!usuario) {
-      return responder(res, 401, {
-        success: false,
-        error: 'Debes iniciar sesion.'
-      });
+    const identidad = await obtenerUsuario(req, res);
+    if (!identidad) {
+      return responder(res, 401, { success: false, error: 'Debes iniciar sesion.' });
     }
 
-    if (req.method === 'GET') {
-      return await consultarPerfil(res, usuario);
+    if (pathname === '/api/profile') {
+      if (req.method === 'GET') return await consultarPerfil(res, identidad.user);
+      if (req.method === 'PATCH') return await actualizarPerfil(req, res, identidad.user);
     }
 
-    if (req.method === 'PATCH') {
-      return await actualizarPerfil(req, res, usuario);
+    if ((pathname === '/api/profile/security/email' ||
+         pathname === '/api/profile/security/password') && req.method === 'PATCH') {
+      return await actualizarSeguridad(req, res, identidad, pathname);
     }
 
-    return responder(res, 405, {
-      success: false,
-      error: 'Metodo no permitido.'
-    });
+    return responder(res, 405, { success: false, error: 'Metodo no permitido.' });
   } catch (error) {
     if ([400, 413, 415].includes(error.status)) {
-      return responder(res, error.status, {
-        success: false,
-        error: error.message
-      });
+      return responder(res, error.status, { success: false, error: error.message });
     }
-
-    console.error(
-      'Error interno de perfil:',
-      error.name || 'Error'
-    );
-
-    return responder(res, 503, {
-      success: false,
-      error: 'El servicio de perfil no esta disponible.'
-    });
+    console.error('Error de perfil y seguridad:', error.name || 'Error');
+    return responder(res, 503, { success: false, error: 'La operacion no esta disponible en este momento.' });
   }
 }
 
-module.exports = {
-  manejarPerfil
-};
+module.exports = { manejarPerfil };

@@ -82,6 +82,7 @@ function mostrarDatos() {
 
   $('ver-email').textContent =
     datosPerfil.email || 'Sin registrar';
+  $('email-actual').textContent = datosPerfil.email || 'Sin registrar';
 
   $('ver-telefono').textContent =
     datosPerfil.telefono || 'Sin registrar';
@@ -237,3 +238,82 @@ formulario.addEventListener(
 
 // Iniciar consulta a nuestra API.
 cargarPerfil();
+
+// --------------------------------------------------
+// SEGURIDAD DE LA CUENTA
+// --------------------------------------------------
+
+async function solicitarSeguridad(ruta, datos) {
+  const respuesta = await fetch(ruta, {
+    method: 'PATCH',
+    credentials: 'same-origin',
+    cache: 'no-store',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(datos)
+  });
+  if (respuesta.status === 401) {
+    window.location.replace('/login.html');
+    throw new Error('Tu sesion ha terminado.');
+  }
+  const resultado = await respuesta.json().catch(() => ({}));
+  if (!respuesta.ok || !resultado.success) {
+    throw new Error(resultado.error || 'No se pudo completar la solicitud.');
+  }
+  return resultado;
+}
+
+function mensajeSeguridad(id, texto, esError = false) {
+  const elemento = $(id);
+  elemento.textContent = texto;
+  elemento.className = `mensaje ${esError ? 'error' : 'exito'}`;
+}
+
+async function ejecutarSeguridad(formulario, mensajeId, ruta, datos) {
+  const boton = formulario.querySelector('button[type="submit"]');
+  boton.disabled = true;
+  mensajeSeguridad(mensajeId, '', false);
+  try {
+    const resultado = await solicitarSeguridad(ruta, datos);
+    formulario.reset();
+    mensajeSeguridad(mensajeId, resultado.message || 'Solicitud procesada.');
+    return true;
+  } catch (error) {
+    mensajeSeguridad(mensajeId,
+      error instanceof TypeError ? 'No se pudo conectar con la API de PetGo.' : error.message,
+      true);
+    return false;
+  } finally {
+    boton.disabled = false;
+  }
+}
+
+$('formulario-email').addEventListener('submit', async evento => {
+  evento.preventDefault();
+  const formulario = evento.currentTarget;
+  if (!formulario.reportValidity()) return;
+  await ejecutarSeguridad(formulario, 'mensaje-email', '/api/profile/security/email', {
+    newEmail: $('seguridad-nuevo-email').value.trim(),
+    currentPassword: $('seguridad-clave-email').value
+  });
+});
+
+$('formulario-password').addEventListener('submit', async evento => {
+  evento.preventDefault();
+  const formulario = evento.currentTarget;
+  if (!formulario.reportValidity()) return;
+  const nueva = $('seguridad-clave-nueva').value;
+  const confirmar = $('seguridad-clave-confirmar').value;
+  if (nueva !== confirmar) {
+    mensajeSeguridad('mensaje-password', 'Las contrasenas nuevas no coinciden.', true);
+    return;
+  }
+  const correcto = await ejecutarSeguridad(formulario, 'mensaje-password',
+    '/api/profile/security/password', {
+      currentPassword: $('seguridad-clave-actual').value,
+      newPassword: nueva,
+      confirmPassword: confirmar
+    });
+  if (correcto) {
+    window.setTimeout(() => window.location.replace('/login.html'), 1800);
+  }
+});
