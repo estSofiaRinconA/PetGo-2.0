@@ -101,6 +101,7 @@ async function cargarPerfil() {
 
   try {
     datosPerfil = await solicitarPerfil();
+    configurarSeguridadPorProveedor(datosPerfil);
 
     mostrarDatos();
 
@@ -317,3 +318,18 @@ $('formulario-password').addEventListener('submit', async evento => {
     window.setTimeout(() => window.location.replace('/login.html'), 1800);
   }
 });
+
+// Cuentas registradas solo con Google no tienen contraseña actual de PetGo.
+// El código OTP por correo verifica su identidad antes de establecer contraseña.
+function configurarSeguridadPorProveedor(perfil) {
+  const proveedores = Array.isArray(perfil?.auth_providers) ? perfil.auth_providers : [];
+  const soloGoogle = proveedores.includes('google') && !proveedores.includes('email');
+  const aviso = document.getElementById('petgo-google-account');
+  if (aviso) aviso.hidden = !soloGoogle;
+  for (const id of ['formulario-email', 'formulario-password']) {
+    const form = document.getElementById(id);
+    if (!form) continue;
+    form.hidden = soloGoogle;
+    for (const control of form.querySelectorAll('input,button')) control.disabled = soloGoogle;
+  }
+}

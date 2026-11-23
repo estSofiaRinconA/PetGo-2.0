@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Guía del administrador | PetGo 2.0</title>
+  <style id="petgo-private-style">html{visibility:hidden}</style>
+  <script type="module" src="/js/private-page.js"></script>
+  <style>
+    :root{color-scheme:light;font-family:Nunito,system-ui,Arial,sans-serif}*{box-sizing:border-box}
+    body{margin:0;background:#fff8f2;color:#172c29;line-height:1.65}
+    header{padding:16px max(20px,calc((100vw - 1080px)/2));background:#173b35;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    header a{color:white;text-decoration:none;font-weight:700}nav{display:flex;gap:18px;flex-wrap:wrap}
+    main{max-width:970px;margin:42px auto;padding:0 20px 70px}h1{font:normal clamp(2rem,4vw,3rem) Georgia,serif}h2{font-size:1.3rem;color:#173b35}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+    section{background:#fff;border:1px solid #eaddd1;border-radius:18px;padding:24px;margin:18px 0}
+    .note{border-left:5px solid #ea580c;padding:12px 18px;background:#fff1e6;border-radius:8px}
+    a{color:#a94207}a:focus-visible,button:focus-visible{outline:3px solid #2563eb;outline-offset:3px}
+    .eyebrow{color:#b64a14;font-weight:700;letter-spacing:.12em;font-size:.8rem}
+    ol{padding-left:23px}li{margin-bottom:8px}
+  </style>
+</head>
+<body>
+<header><a href="/admin.html">🐾 PetGo · Administración</a>
+  <nav aria-label="Administración"><a href="/admin.html">Solicitudes</a><a href="/admin-agenda.html">Agenda</a><a href="/admin-guia.html" aria-current="page">Guía</a></nav>
+</header>
+<main>
+  <span class="eyebrow">GUÍA DE USO · ACCESO ADMINISTRATIVO</span>
+  <h1>Cómo administrar PetGo</h1>
+  <p>Esta guía explica el manejo cotidiano de solicitudes y horarios. Solo está disponible después de comprobar que tu cuenta tiene permisos administrativos.</p>
+  <div class="grid">
+    <section><h2>1. Consultar solicitudes</h2>
+      <ol><li>Abre <a href="/admin.html">Solicitudes de servicio</a>.</li><li>Utiliza <strong>Activas</strong> para ver reservas pendientes y confirmadas.</li><li>Utiliza <strong>Historial</strong> para revisar las completadas y canceladas.</li><li>Selecciona <strong>Actualizar lista</strong> para obtener el estado más reciente.</li></ol>
+    </section>
+    <section><h2>2. Confirmar y completar</h2>
+      <ol><li>Comprueba la mascota, servicio, fecha y hora de una solicitud pendiente.</li><li>Confirma la reserva solo cuando puedes atenderla.</li><li>Después de prestar el servicio, márcala como completada.</li><li>Verifica el resultado en la lista o el historial.</li></ol>
+    </section>
+    <section><h2>3. Configurar la agenda</h2>
+      <ol><li>Entra a <a href="/admin-agenda.html">Configurar agenda</a>.</li><li>Revisa los días de atención y las horas de apertura y cierre.</li><li>Configura duración y capacidad de cada modalidad.</li><li>Pulsa <strong>Guardar reglas</strong> para guardar los cambios en Supabase.</li></ol>
+    </section>
+    <section><h2>4. Seguridad y sesión</h2>
+      <ol><li>Utiliza solo cuentas autorizadas como administradoras.</li><li>No compartas credenciales, contraseñas ni códigos.</li><li>Al terminar, pulsa <strong>Cerrar sesión</strong> en el panel.</li><li>Si un cambio no aparece, actualiza la lista antes de repetirlo.</li></ol>
+    </section>
+  </div>
+  <p class="note"><strong>Importante:</strong> los horarios configurados no realizan todavía un cálculo completo de cupos por solapamientos de duración. Confirma manualmente la disponibilidad antes de aprobar una solicitud.</p>
+  <section><h2>Estados de las reservas</h2><p><strong>Pendiente:</strong> recibida, aún no aprobada. <strong>Confirmada:</strong> aceptada por administración. <strong>Completada:</strong> servicio finalizado. <strong>Cancelada:</strong> solicitud cancelada; permanece en el historial.</p></section>
+  <section><h2>Cuando hay un problema</h2><p>Si ves «Sin permisos», vuelve al inicio de sesión con una cuenta autorizada. Si la API no responde, revisa que el servicio de Render esté activo. Si no llegan correos, revisa los registros de Supabase Auth y SMTP. No utilices el panel para cambiar permisos de usuarios: ese proceso pertenece a la administración técnica de Supabase.</p></section>
+</main>
+</body>
+</html>

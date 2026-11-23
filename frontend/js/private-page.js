@@ -40,7 +40,7 @@ try {
     window.location.replace('/login.html');
   } else {
     const admin = resultado.is_admin === true;
-    const paginaAdmin = ['/admin.html','/admin-agenda.html'].includes(window.location.pathname);
+    const paginaAdmin = ['/admin.html','/admin-agenda.html','/admin-guia.html'].includes(window.location.pathname);
     if (admin && !paginaAdmin) {
       window.location.replace('/admin.html');
     } else if (!admin && paginaAdmin) {

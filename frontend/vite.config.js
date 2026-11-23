@@ -28,7 +28,8 @@ export default defineConfig({
         reservas: resolve(raiz, 'reservas.html'),
         perfil: resolve(raiz, 'perfil.html'),
         admin: resolve(raiz, 'admin.html'),
-        agenda: resolve(raiz, 'admin-agenda.html')
+        agenda: resolve(raiz, 'admin-agenda.html'),
+        guiaAdmin: resolve(raiz, 'admin-guia.html')
       }
     }
   }
