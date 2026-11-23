@@ -4,15 +4,23 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Configurar agenda | PetGo 2.0</title>
 <style>html{visibility:hidden}</style>
-<script type="module" src="/js/private-page.js"></script>
+<script type="module" src="/js/private-page.js?v=20261123b"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/admin-agenda.css">
 <script type="module" src="/js/admin-agenda.js"></script>
+<style>
+  .petgo-admin-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .petgo-admin-logout{border:1px solid #c2410c;border-radius:10px;background:#fff7ed;color:#9a3412;padding:9px 14px;font:700 0.95rem Nunito,system-ui,sans-serif;cursor:pointer}
+  .petgo-admin-logout:hover{background:#ffedd5}
+  .petgo-admin-logout:focus-visible{outline:3px solid #2563eb;outline-offset:3px}
+  .petgo-admin-logout:disabled{opacity:.6;cursor:wait}
+</style>
+<script type="module" src="/js/admin-logout.js?v=20261123c"></script>
 </head>
 <body>
-<header class="top"><a class="brand" href="/panel.html">🐾 PetGo</a><span>Administración · Agenda</span><a href="/admin.html">← Solicitudes</a></header>
+<header class="top"><a class="brand" href="/admin.html">🐾 PetGo</a><span>Administración · Agenda</span><nav class="petgo-admin-actions" aria-label="Opciones de administrador"><a href="/admin.html">← Solicitudes</a><button type="button" id="admin-logout" class="petgo-admin-logout">Cerrar sesión</button></nav></header>
 <main class="wrap">
 <div class="intro"><span class="eyebrow">SOLO ADMINISTRADORES</span><h1>Reglas de atención</h1><p>Modifica los días, el horario general, la duración y la capacidad de cada modalidad. Zona horaria: <strong>America/Bogota</strong>.</p></div>
 <p class="notice"><strong>Importante:</strong> estos ajustes se guardan en Supabase, pero todavía no calculan automáticamente los cupos del calendario ni modifican reservas existentes. La prevención actual de doble confirmación del mismo inicio sigue activa.</p>

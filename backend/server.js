@@ -8,6 +8,7 @@ function responder(res,codigo,contenido,extra={}) {
 const rutas = new Map([
   ['/api/auth/register',['POST']], ['/api/auth/login',['POST']],
   ['/api/auth/me',['GET']], ['/api/auth/logout',['POST']],
+  ['/api/auth/password/recovery',['POST']], ['/api/auth/password/verify',['POST']], ['/api/auth/password/reset',['POST']],
   ['/api/profile',['GET','PATCH']], ['/api/pets',['GET','POST']], ['/api/pets/item',['PATCH','DELETE']],
   ['/api/services',['GET']], ['/api/reservations',['GET','POST']], ['/api/reservations/cancel',['PATCH']],
   ['/api/notifications',['GET']], ['/api/notifications/read',['PATCH']],
@@ -22,6 +23,10 @@ const server = http.createServer(async(req,res)=>{
   const metodos=rutas.get(pathname);
   if(!metodos)return responder(res,404,{success:false,error:'Ruta no encontrada'});
   if(!metodos.includes(req.method))return responder(res,405,{success:false,error:'M\u00e9todo no permitido'},{Allow:metodos.join(', ')});
+  if(pathname.startsWith('/api/auth/password/')){
+    try{return await require('./routes/password.routes').manejarPassword(req,res,pathname);}
+    catch(err){console.error('Password:',err.name||'Error');return responder(res,503,{success:false,error:'Recuperacion no disponible.'});}
+  }
   if(pathname.startsWith('/api/auth/')){
     try{return await require('./routes/auth.routes').manejarAuth(req,res,pathname);}
     catch(err){console.error('Auth:',err.name||'Error');return responder(res,503,{success:false,error:'Autenticacion no disponible.'});}

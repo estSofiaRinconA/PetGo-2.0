@@ -320,13 +320,30 @@ async function iniciarSesion(req, res) {
     });
   }
 
+  // La autorizacion administrativa se obtiene siempre del servidor.
+  // Los correos y contrasenas nunca se usan como una lista en el frontend.
+  const { data: admin, error: adminError } = await supabaseAdmin
+    .from('petgo_admin_users')
+    .select('user_id')
+    .eq('user_id', data.user.id)
+    .maybeSingle();
+
+  if (adminError) {
+    console.error('No se pudo comprobar el rol:', adminError.code);
+    return responder(res, 503, {
+      success: false,
+      error: 'No se pudieron verificar los permisos de la cuenta.'
+    });
+  }
+
   guardarSesion(res, data.session);
 
-  // Nunca devolver tokens en JSON.
+  // Nunca devolver tokens en JSON: solo datos publicos y rol autorizado.
   return responder(res, 200, {
     success: true,
-    message: 'Inicio de sesión correcto.',
-    user: usuarioPublico(data.user)
+    message: 'Inicio de sesion correcto.',
+    user: usuarioPublico(data.user),
+    is_admin: Boolean(admin)
   });
 }
 
@@ -395,9 +412,26 @@ async function obtenerUsuario(req, res) {
     });
   }
 
+  // La API consulta el rol en cada comprobacion de sesion.
+  // No se confia en datos del navegador para decidir el rol.
+  const { data: admin, error: adminError } = await supabaseAdmin
+    .from('petgo_admin_users')
+    .select('user_id')
+    .eq('user_id', usuario.id)
+    .maybeSingle();
+
+  if (adminError) {
+    console.error('No se pudo comprobar el rol:', adminError.code);
+    return responder(res, 503, {
+      success: false,
+      error: 'No se pudieron verificar los permisos de la cuenta.'
+    });
+  }
+
   return responder(res, 200, {
     success: true,
-    user: usuarioPublico(usuario)
+    user: usuarioPublico(usuario),
+    is_admin: Boolean(admin)
   });
 }
 

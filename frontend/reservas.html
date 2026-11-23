@@ -19,9 +19,9 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="/css/reservas.css">
+  <link rel="stylesheet" href="/css/reservas.css?v=cliente-tabs-1">
   <script src="/js/private-page.js" type="module"></script>
-  <script src="/js/reservas.js" type="module"></script>
+  <script src="/js/reservas.js?v=cliente-tabs-1" type="module"></script>
 </head>
 
 <body>
@@ -57,7 +57,36 @@
         <span class="panel-icono" aria-hidden="true">📅</span>
       </div>
 
-      <!-- Estado de carga: para la futura API -->
+      <!-- Pestañas para organizar las reservas del cliente -->
+      <div class="pestanas-reservas" role="tablist" aria-label="Tipos de reservas">
+        <button
+          id="tab-activas"
+          class="pestana-reservas activa"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="seccion-reservas"
+          tabindex="0"
+          data-tab="activas"
+        >
+          Activas <span id="contador-activas" class="contador-pestana">0</span>
+        </button>
+        <button
+          id="tab-historial"
+          class="pestana-reservas"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="seccion-reservas"
+          tabindex="-1"
+          data-tab="historial"
+        >
+          Historial <span id="contador-historial" class="contador-pestana">0</span>
+        </button>
+      </div>
+
+      <div id="seccion-reservas" role="tabpanel" aria-labelledby="tab-activas" tabindex="0">
+      <!-- Estado de carga -->
       <div id="estado-cargando" class="estado-vacio oculto">
         <p>Consultando tus reservas...</p>
       </div>
@@ -68,15 +97,12 @@
           📅
         </div>
 
-        <h3>Aún no tienes reservas</h3>
+        <h3 id="titulo-vacio">No tienes reservas activas</h3>
 
-        <p>
-          Cuando solicites un servicio, podrás consultar
-          su fecha y estado aquí.
-        </p>
+        <p id="descripcion-vacio">Tus solicitudes pendientes y reservas confirmadas aparecerán aquí.</p>
       </div>
 
-      <!-- Error de carga: para la futura API -->
+      <!-- Error de carga -->
       <div
         id="estado-error"
         class="estado-vacio oculto"
@@ -93,12 +119,14 @@
         </p>
       </div>
 
-      <!-- Aquí se mostrarán los registros reales -->
+      <!-- Aquí se mostrarán las reservas de la pestaña activa -->
       <div
         id="lista-reservas"
         class="lista-reservas oculto"
         aria-live="polite"
       ></div>
+
+    </div>
 
     </section>
 

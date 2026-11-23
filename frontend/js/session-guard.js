@@ -25,5 +25,5 @@ export async function comprobarSesion() {
     return { estado: 'no-autorizado', usuario: null };
   }
 
-  return { estado: 'autorizado', usuario: datos.user };
+  return { estado: 'autorizado', usuario: datos.user, is_admin: datos.is_admin === true };
 }

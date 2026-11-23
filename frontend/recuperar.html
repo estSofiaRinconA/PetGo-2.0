@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recuperar contraseña | PetGo</title>
+  <link rel="stylesheet" href="/css/auth.css">
+  <script type="module" src="/js/recuperar.js"></script>
+</head>
+<body>
+  <header class="encabezado">
+    <a class="logo" href="/index.html">🐾 PetGo</a>
+    <a class="enlace-header" href="/login.html">Iniciar sesión</a>
+  </header>
+  <main class="contenedor">
+    <section class="tarjeta" aria-labelledby="titulo">
+      <div class="icono" aria-hidden="true">🔐</div>
+      <h1 id="titulo">Recuperar contraseña</h1>
+      <p class="subtitulo">Verifica tu correo antes de establecer una nueva contraseña.</p>
+      <p id="progreso" class="pasos-recuperacion" aria-live="polite">Paso 1 de 3 · Solicitar código</p>
+
+      <form id="solicitar-form">
+        <label for="correo">Correo electrónico</label>
+        <input id="correo" type="email" name="email" autocomplete="email" maxlength="254" required>
+        <button type="submit">Enviar código</button>
+      </form>
+
+      <form id="verificar-form" hidden>
+        <label for="codigo">Código recibido por correo</label>
+        <input id="codigo" name="token" type="text" inputmode="numeric" pattern="[0-9]{6,8}" minlength="6" maxlength="8" autocomplete="one-time-code" required>
+        <button type="submit">Verificar código</button>
+        <button type="button" id="volver-correo" class="boton-secundario">Cambiar correo</button>
+      </form>
+
+      <form id="restablecer-form" hidden>
+        <p class="ayuda-otp">Código verificado. Ingresa una contraseña nueva.</p>
+        <label for="nueva">Nueva contraseña</label>
+        <input id="nueva" name="password" type="password" minlength="12" maxlength="1024" autocomplete="new-password" required>
+        <label for="confirmacion">Confirmar nueva contraseña</label>
+        <input id="confirmacion" name="confirmacion" type="password" minlength="12" maxlength="1024" autocomplete="new-password" required>
+        <button type="submit">Guardar nueva contraseña</button>
+      </form>
+
+      <p id="mensaje-recuperacion" class="mensaje" aria-live="polite" role="status"></p>
+      <p class="cambiar"><a href="/login.html">Volver a iniciar sesión</a></p>
+    </section>
+  </main>
+  <footer>© 2026 PetGo · Cuidamos a tu mejor amigo 🐾</footer>
+</body>
+</html>

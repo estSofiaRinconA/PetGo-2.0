@@ -2,7 +2,12 @@
 const message=document.getElementById('message');
 const content=document.getElementById('admin-content');
 const list=document.getElementById('bookings');
-const filter=document.getElementById('filter');
+const tabActive=document.getElementById('tab-active');
+const tabHistory=document.getElementById('tab-history');
+const countActive=document.getElementById('count-active');
+const countHistory=document.getElementById('count-history');
+const description=document.getElementById('tab-description');
+let currentTab='active';
 const refresh=document.getElementById('refresh');
 let bookings=[];
 function status(text,isError=false){message.textContent=text;message.classList.toggle('error',isError);}
@@ -17,7 +22,20 @@ function node(tag,className,value){const x=document.createElement(tag);if(classN
 function dateText(value){const d=new Date(value);return Number.isNaN(d.getTime())?'Fecha no disponible':new Intl.DateTimeFormat('es-CO',{dateStyle:'medium',timeStyle:'short',timeZone:'America/Bogota'}).format(d);}
 function render(){
   list.replaceChildren();
-  const shown=bookings.filter(b=>filter.value==='todos'||b.status===filter.value);
+  const activeStates=['pendiente','confirmada'];
+  const historicalStates=['cancelada','completada'];
+  countActive.textContent=`(${bookings.filter(b=>activeStates.includes(b.status)).length})`;
+  countHistory.textContent=`(${bookings.filter(b=>historicalStates.includes(b.status)).length})`;
+  const active=currentTab==='active';
+  tabActive.classList.toggle('is-selected',active);
+  tabHistory.classList.toggle('is-selected',!active);
+  tabActive.setAttribute('aria-selected',String(active));
+  tabHistory.setAttribute('aria-selected',String(!active));
+  tabActive.tabIndex=active?0:-1;
+  tabHistory.tabIndex=active?-1:0;
+  list.setAttribute('aria-labelledby',active?'tab-active':'tab-history');
+  description.textContent=active?'Solicitudes pendientes y confirmadas.':'Solicitudes canceladas y completadas.';
+  const shown=bookings.filter(b=>(active?activeStates:historicalStates).includes(String(b.status||'').toLowerCase()));
   if(!shown.length){list.append(node('p','empty','No hay solicitudes para este filtro.'));return;}
   for(const b of shown){
     const card=node('article','card');
@@ -48,7 +66,7 @@ function render(){
 async function load(){
   refresh.disabled=true;
   status('Cargando solicitudes...');
-  try{const data=await request('/api/admin/bookings');bookings=data.bookings||[];render();status(`Solicitudes cargadas: ${bookings.length}.`);}
+  try{const data=await request('/api/admin/bookings');bookings=Array.isArray(data.bookings)?data.bookings:[];render();status(`Solicitudes cargadas: ${bookings.length}.`);}
   catch(error){status(error.message,true);}
   finally{refresh.disabled=false;}
 }
@@ -58,6 +76,20 @@ async function init(){
   catch(error){status(error.status===403?'Esta cuenta no tiene permisos de administración.':error.message,true);}
   finally{refresh.disabled=false;}
 }
-filter.addEventListener('change',render);
+function selectTab(tab){
+  currentTab=tab;
+  render();
+}
+tabActive.addEventListener('click',()=>selectTab('active'));
+tabHistory.addEventListener('click',()=>selectTab('history'));
+for (const tab of [tabActive,tabHistory]){
+  tab.addEventListener('keydown',event=>{
+    if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+    event.preventDefault();
+    const next=tab===tabActive?tabHistory:tabActive;
+    selectTab(next===tabActive?'active':'history');
+    next.focus();
+  });
+}
 refresh.addEventListener('click',load);
 init();

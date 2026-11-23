@@ -36,10 +36,18 @@ function mostrarErrorConexion() {
 try {
   const resultado = await comprobarSesion();
 
-  if (resultado.estado === 'autorizado') {
-    mostrarPagina();
-  } else {
+  if (resultado.estado !== 'autorizado') {
     window.location.replace('/login.html');
+  } else {
+    const admin = resultado.is_admin === true;
+    const paginaAdmin = ['/admin.html','/admin-agenda.html'].includes(window.location.pathname);
+    if (admin && !paginaAdmin) {
+      window.location.replace('/admin.html');
+    } else if (!admin && paginaAdmin) {
+      window.location.replace('/panel.html');
+    } else {
+      mostrarPagina();
+    }
   }
 } catch {
   mostrarErrorConexion();
