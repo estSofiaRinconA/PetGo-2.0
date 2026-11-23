@@ -25,3 +25,43 @@ html.pg-high-contrast #pg-access-panel, html.pg-high-contrast #pg-cookie-banner 
 html.pg-high-contrast #pg-access-trigger, html.pg-high-contrast #pg-access-panel button, html.pg-high-contrast #pg-cookie-banner button { background: #ffe477 !important; color: #000 !important; border-color: #ffe477 !important; }
 html.pg-high-contrast #pg-access-panel button[aria-pressed="true"] { background: #fff !important; color: #000 !important; }
 @media (max-width: 600px) { #pg-access-trigger { right: 12px !important; bottom: 12px !important; font-size: 14px !important; padding: 10px 12px !important; } #pg-access-panel { right: 12px !important; bottom: 67px !important; } #pg-cookie-banner { bottom: 70px !important; left: 12px !important; width: calc(100vw - 24px) !important; } }
+
+
+/* PetGo 2.0 - Fix: boton flotante compacto en todas las paginas.
+   Tiene prioridad sobre reglas generales de botones o barras de navegacion. */
+html body #pg-access-trigger {
+  position: fixed !important;
+  inset: auto 18px 18px auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 158px !important;
+  width: 158px !important;
+  min-width: 158px !important;
+  max-width: 158px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  margin: 0 !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  line-height: 1.15 !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  transform: none !important;
+  float: none !important;
+  overflow: hidden !important;
+}
+@media (max-width: 600px) {
+  html body #pg-access-trigger {
+    inset: auto 12px 12px auto !important;
+    width: 148px !important;
+    min-width: 148px !important;
+    max-width: 148px !important;
+    flex-basis: 148px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    font-size: 14px !important;
+  }
+}
